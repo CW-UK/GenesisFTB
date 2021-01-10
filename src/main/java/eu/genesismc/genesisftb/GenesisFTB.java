@@ -32,7 +32,7 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
     @Override
     public void onLoad() {
         getLogger().info(ChatColor.GREEN + "GenesisFTB" + ChatColor.AQUA + " Hooking into WorldGuard..");
-        WorldGuardManager.getInstance().registerFlags();            // WorldGuard flags for KDDeathTracker
+        WorldGuardManager.getInstance().registerFlags();
     }
     @Override
     public void onDisable() {
@@ -64,6 +64,7 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         config.addDefault("settings.announce-remove", true);
         config.addDefault("settings.announce-reset", true);
         config.addDefault("settings.prefix", "[FTB]");
+        config.addDefault("settings.na-placeholder", "N/A");
         config.addDefault("settings.found-message", "%player% has found the button!");
         config.addDefault("settings.placed-message", "%player% has placed a button!");
         config.addDefault("settings.removed-message", "%player% has removed a button!");

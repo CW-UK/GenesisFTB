@@ -1,6 +1,7 @@
 package eu.genesismc.genesisftb;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -13,13 +14,6 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class Holograms extends PlaceholderExpansion implements Listener {
-
-
-    /*******************************
-     *
-     *  PlaceholderAPI Definitions
-     *
-     *******************************/
 
     @Override
     public String getAuthor() {
@@ -46,46 +40,38 @@ public class Holograms extends PlaceholderExpansion implements Listener {
         return true;
     }
 
-    @Override
-    public String getPlugin() {
-        return null;
-    }
-
     public List<String> topPlayers = new ArrayList<>();
     public List<String> topWins = new ArrayList<>();
+    FileConfiguration config = GenesisFTB.getPlugin().getConfig();
 
     @Override
     public String onPlaceholderRequest(Player player, String ph) {
 
         if (player == null || ph == null) { return ""; }
 
-        Bukkit.getLogger().info("Placeholder requested.. " + ph);
-
-        topPlayers.clear();
-        topWins.clear();
         getTop();
 
         if (ph.startsWith("top_player_")) {
             try {
                 int topPlace = Integer.parseInt(ph.replace("top_player_", ""));
-                return topPlayers.get(topPlace) != null ? topPlayers.get(topPlace) : "N/A";
+                return topPlayers.get(topPlace) != null ? topPlayers.get(topPlace) : config.getString("na-placeholder");
             }
             catch (IndexOutOfBoundsException e) {
-                return "N/A";
+                return config.getString("na-placeholder");
             }
         }
 
         if (ph.startsWith("top_wins_")) {
             try {
                 int topPlace = Integer.parseInt(ph.replace("top_wins_", ""));
-                return topWins.get(topPlace) != null ? topWins.get(topPlace) : "N/A";
+                return topWins.get(topPlace) != null ? topWins.get(topPlace) : config.getString("na-placeholder");
             }
             catch (IndexOutOfBoundsException e) {
-                return "N/A";
+                return config.getString("na-placeholder");
             }
         }
 
-        return "N/A";
+        return config.getString("na-placeholder");
 
     }
 
@@ -99,14 +85,15 @@ public class Holograms extends PlaceholderExpansion implements Listener {
             getWinsConnection.commit();
             ResultSet wins = getStatement.executeQuery();
 
+            topPlayers.clear();
+            topWins.clear();
             topPlayers.add("dummy");
             topWins.add("0");
+
             try {
                 while (wins != null && wins.next()) {
-                    int totalWins = wins.getInt("wins");
-                    String totalPlayer = wins.getString("name");
-                    topPlayers.add(totalPlayer);
-                    topWins.add(String.valueOf(totalWins));
+                    topPlayers.add(wins.getString("name"));
+                    topWins.add(String.valueOf(wins.getInt("wins")));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
