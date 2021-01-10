@@ -28,6 +28,7 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
 
     public ArrayList<Location> buttons = new ArrayList<Location>();
     public Boolean inGame = false;
+    public FileConfiguration config = this.getConfig();
 
     @Override
     public void onLoad() {

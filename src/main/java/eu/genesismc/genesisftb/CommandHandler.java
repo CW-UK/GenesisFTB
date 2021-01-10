@@ -12,10 +12,10 @@ import java.util.UUID;
 
 public class CommandHandler implements CommandExecutor, Listener {
 
-    private final static FileConfiguration config = GenesisFTB.getPlugin().getConfig();
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+        FileConfiguration config = GenesisFTB.getInstance().getConfig();
 
         /*************************
          *  EMPTY COMMAND

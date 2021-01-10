@@ -42,36 +42,39 @@ public class Holograms extends PlaceholderExpansion implements Listener {
 
     public List<String> topPlayers = new ArrayList<>();
     public List<String> topWins = new ArrayList<>();
-    FileConfiguration config = GenesisFTB.getPlugin().getConfig();
 
     @Override
     public String onPlaceholderRequest(Player player, String ph) {
 
         if (player == null || ph == null) { return ""; }
 
+        FileConfiguration config = GenesisFTB.getPlugin().getConfig();
+        String noPlaceholder = config.getString("settings.na-placeholder");
+
         getTop();
 
         if (ph.startsWith("top_player_")) {
+            Bukkit.getLogger().info("FTB Placeholder requested");
             try {
                 int topPlace = Integer.parseInt(ph.replace("top_player_", ""));
-                return topPlayers.get(topPlace) != null ? topPlayers.get(topPlace) : config.getString("na-placeholder");
+                return topPlayers.get(topPlace) != null ? topPlayers.get(topPlace) : noPlaceholder;
             }
             catch (IndexOutOfBoundsException e) {
-                return config.getString("na-placeholder");
+                return noPlaceholder;
             }
         }
 
         if (ph.startsWith("top_wins_")) {
             try {
                 int topPlace = Integer.parseInt(ph.replace("top_wins_", ""));
-                return topWins.get(topPlace) != null ? topWins.get(topPlace) : config.getString("na-placeholder");
+                return topWins.get(topPlace) != null ? topWins.get(topPlace) : noPlaceholder;
             }
             catch (IndexOutOfBoundsException e) {
-                return config.getString("na-placeholder");
+                return noPlaceholder;
             }
         }
 
-        return config.getString("na-placeholder");
+        return noPlaceholder;
 
     }
 
