@@ -10,7 +10,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public final class GenesisFTB extends JavaPlugin implements Listener, CommandExecutor {
 
@@ -37,6 +36,7 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         getLogger().info(ChatColor.GREEN + "GenesisFTB" + ChatColor.AQUA + " Hooking into WorldGuard..");
         WorldGuardManager.getInstance().registerFlags();
     }
+
     @Override
     public void onDisable() {
         getLogger().info("GenesisFTB has been disabled.");
