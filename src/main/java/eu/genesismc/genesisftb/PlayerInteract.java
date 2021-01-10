@@ -16,6 +16,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerInteract implements Listener, Cancellable {
@@ -72,6 +74,9 @@ public class PlayerInteract implements Listener, Cancellable {
                             color(config.getString("settings.found-message").replace("%player%", player).replace("%count%", String.valueOf(totalButtons)))
                     );
                 }
+
+                Location loc = e.getClickedBlock().getLocation();
+                GenesisFTB.getPlugin().foundList.add("&f" + player + " &efound a button at &fx" + loc.getX() + " y" + loc.getY() + " z" + loc.getZ());
 
                 p.sendMessage(ChatColor.GOLD + "You have now found " + ChatColor.WHITE + totalWins + ChatColor.GOLD + " buttons.");
 

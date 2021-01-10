@@ -10,6 +10,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public final class GenesisFTB extends JavaPlugin implements Listener, CommandExecutor {
 
@@ -27,6 +28,7 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
     }
 
     public ArrayList<Location> buttons = new ArrayList<Location>();
+    public ArrayList<String> foundList = new ArrayList<String>();
     public Boolean inGame = false;
     public FileConfiguration config = this.getConfig();
 
@@ -48,6 +50,7 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         loadDefaultConfig();
         PluginManager pm = Bukkit.getServer().getPluginManager(); // register plugin manager
         this.getCommand("ftb").setExecutor(new CommandHandler());
+        this.getCommand("ftb").setTabCompleter(new CommandHandler());
         pm.registerEvents(this, plugin);
         pm.registerEvents(new PlayerInteract(), plugin);
         pm.registerEvents(new BlockPlace(), plugin);
