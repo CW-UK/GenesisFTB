@@ -1,0 +1,16 @@
+name: GenesisFTB
+main: eu.genesismc.genesisftb.GenesisFTB
+version: 1.0
+author: CW_UK
+api-version: 1.15
+depend: [WorldGuard]
+
+commands:
+  ftb:
+    description: Command for the GenesisFTB plugin
+    usage: "Usage: /ftb <command>"
+
+permissions:
+  genesisftb.admin:
+    description: Gives a user full access to the GenesisFTB plugin
+    default: op
