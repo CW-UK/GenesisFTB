@@ -1,5 +1,7 @@
 package eu.genesismc.genesisftb;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -106,6 +108,27 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
         }
 
         /*************************
+         *  BROADCAST COMMAND
+         *************************/
+
+        if (args[0].equals("broadcast") && sender.hasPermission("genesisftb.admin")) {
+
+            String broadcast = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
+
+            if (broadcast.length() < 1) {
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " You need to provide a message.");
+                return true;
+            }
+
+            for (Player pl : Bukkit.getOnlinePlayers()) {
+                pl.sendMessage("" +
+                        color(config.getString("settings.prefix") + " " + ChatColor.RESET + broadcast)
+                );
+            }
+            return true;
+        }
+
+        /*************************
          *  FOUND COMMAND
          *************************/
 
@@ -164,6 +187,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                     tabCompletions.add("reload");
                     tabCompletions.add("reset");
                     tabCompletions.add("start");
+                    tabCompletions.add("broadcast");
                     Collections.sort(tabCompletions);
                     return tabCompletions;
                 }
