@@ -54,7 +54,6 @@ public class Holograms extends PlaceholderExpansion implements Listener {
         getTop();
 
         if (ph.startsWith("top_player_")) {
-            Bukkit.getLogger().info("FTB Placeholder requested");
             try {
                 int topPlace = Integer.parseInt(ph.replace("top_player_", ""));
                 return topPlayers.get(topPlace) != null ? topPlayers.get(topPlace) : noPlaceholder;

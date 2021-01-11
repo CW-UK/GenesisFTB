@@ -75,12 +75,16 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         config.addDefault("settings.start-message", "The game has started! There are %count% buttons to find!");
         config.addDefault("settings.reset-message", "The game has been reset and all buttons have been removed.");
         config.addDefault("settings.end-message", "The game has ended! All buttons have been found.");
+        config.addDefault("rewards", "");
+        /*******************************
+         * SQL SUPPORT - NOT IMPLEMENTED
+         ******************************//*
         config.addDefault("sql.ip", "localhost");
         config.addDefault("sql.port", "3306");
         config.addDefault("sql.database", "genesisftb");
         config.addDefault("sql.table-prefix", "genesisftb_");
         config.addDefault("sql.username", "minecraft");
-        config.addDefault("sql.password", "password");
+        config.addDefault("sql.password", "password");*/
         config.options().copyDefaults(true);
         saveConfig();
     }
