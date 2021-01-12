@@ -66,11 +66,21 @@ public class PlayerInteract implements Listener, Cancellable {
                     e.getClickedBlock().setType(Material.AIR);
                 }
 
+                if (config.getBoolean("settings.close-doors-first-button") && GenesisFTB.getPlugin().foundList.size() == 0) {
+                    GenesisFTB.getPlugin().closeDoors();
+                }
+
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     pl.sendMessage(""+
                             color(config.getString("settings.prefix")) + " " +
                             color(config.getString("settings.found-message").replace("%player%", player).replace("%count%", String.valueOf(totalButtons)))
                     );
+                    if (GenesisFTB.getPlugin().doorsOpen) {
+                        pl.sendMessage(""+
+                                color(config.getString("settings.prefix")) + " " +
+                                color(config.getString("settings.doors-closed-message"))
+                        );
+                    }
                 }
 
                 Location loc = e.getClickedBlock().getLocation();
@@ -95,6 +105,9 @@ public class PlayerInteract implements Listener, Cancellable {
                                 color(config.getString("settings.prefix")) + " " +
                                 color(config.getString("settings.end-message").replace("%player%", player).replace("%count%", String.valueOf(totalButtons)))
                         );
+                    }
+                    if (config.getBoolean("settings.open-doors-end-game")) {
+                        GenesisFTB.getPlugin().openDoors();
                     }
                 }
 

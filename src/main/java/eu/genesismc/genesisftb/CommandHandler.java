@@ -3,6 +3,8 @@ package eu.genesismc.genesisftb;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Openable;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,11 +12,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
 
@@ -22,6 +22,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         FileConfiguration config = GenesisFTB.getInstance().getConfig();
+        Player player = (Player) sender;
 
         /*************************
          *  EMPTY COMMAND
@@ -41,6 +42,98 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
         if (args[0].equals("reload") && sender.hasPermission("genesisftb.admin")) {
             GenesisFTB.getPlugin().reloadConfig();
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " Configuration reloaded.");
+            return true;
+        }
+
+        /*******************
+         *  DOORADD COMMAND
+         *******************/
+
+        if (args[0].equals("dooradd") && sender.hasPermission("genesisftb.admin")) {
+
+            try {
+                Block block = player.getTargetBlock(null, 50);
+                Openable toOpen = (Openable) block.getBlockData();
+                if (!(block == null) && toOpen instanceof Openable) {
+
+                    List list = config.getList("doors");
+                    if (list.contains(block.getLocation())) {
+                        sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That door is already linked.");
+                        return true;
+                    }
+
+                    list.add(block.getLocation());
+                    Location loc = block.getLocation();
+                    config.set("doors", list);
+                    GenesisFTB.getPlugin().saveConfig();
+                    sender.sendMessage(
+                            color(config.getString("settings.prefix")) +
+                                    ChatColor.GREEN + " Door at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is now a game door.");
+                    return true;
+                }
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
+                return true;
+
+            }
+            catch (ClassCastException exc) {
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
+                return true;
+            }
+        }
+
+
+        /*******************
+         *  DOORDEL COMMAND
+         *******************/
+
+        if (args[0].equals("doordel") && sender.hasPermission("genesisftb.admin")) {
+
+            try {
+                Block block = player.getTargetBlock(null, 50);
+                Openable toOpen = (Openable) block.getBlockData();
+                if (!(block == null) && toOpen instanceof Openable) {
+
+                    List list = config.getList("doors");
+                    if (!list.contains(block.getLocation())) {
+                        sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That door is not part of the game.");
+                        return true;
+                    }
+
+                    list.remove(block.getLocation());
+                    Location loc = block.getLocation();
+                    config.set("doors", list);
+                    GenesisFTB.getPlugin().saveConfig();
+                    sender.sendMessage(
+                            color(config.getString("settings.prefix")) +
+                                    ChatColor.GREEN + " Door at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is no longer a game door.");
+                    return true;
+                }
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
+                return true;
+            }
+            catch (ClassCastException exc) {
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
+                return true;
+            }
+        }
+
+        /*************************
+         *  OPENDOORS COMMAND
+         *************************/
+
+        if (args[0].equals("opendoors") && sender.hasPermission("genesisftb.admin")) {
+            GenesisFTB.getPlugin().openDoors();
+            sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Opening game doors..");
+            return true;
+        }
+
+        /*************************
+         *  CLOSEDOORS COMMAND
+         *************************/
+
+        if (args[0].equals("closedoors") && sender.hasPermission("genesisftb.admin")) {
+            GenesisFTB.getPlugin().closeDoors();
+            sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Closing game doors..");
             return true;
         }
 
@@ -66,6 +159,11 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                         color(config.getString("settings.start-message").replace("%count%", String.valueOf(totalButtons)))
                 );
             }
+            if (config.getBoolean("settings.open-doors")) {
+                GenesisFTB.getPlugin().openDoors();
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Opening game doors..");
+            }
+
             return true;
         }
 
@@ -85,6 +183,10 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                         color(config.getString("settings.prefix")) + " " +
                         color(config.getString("settings.reset-message"))
                 );
+            }
+            if (config.getBoolean("settings.close-doors")) {
+                GenesisFTB.getPlugin().closeDoors();
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Closing game doors..");
             }
             return true;
         }
@@ -201,18 +303,12 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (cmd.getName().equalsIgnoreCase("ftb")) {
-            if (args.length == 1) {
+            if (args.length >= 1) {
                 if (sender.hasPermission("genesisftb.admin")) {
-                    ArrayList<String> tabCompletions = new ArrayList<String>();
-                    tabCompletions.add("found");
-                    tabCompletions.add("cleardatabase");
-                    tabCompletions.add("list");
-                    tabCompletions.add("reload");
-                    tabCompletions.add("reset");
-                    tabCompletions.add("start");
-                    tabCompletions.add("broadcast");
-                    Collections.sort(tabCompletions);
-                    return tabCompletions;
+                    final List<String> commands = Arrays.asList("found", "cleardatabase", "list", "reload", "reset", "opendoors",
+                            "closedoors", "doordel", "dooradd", "start", "broadcast");
+
+                    return (args.length < 2) ? StringUtil.copyPartialMatches(args[0], commands, new ArrayList<>()) : null;
                 }
             }
         }

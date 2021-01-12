@@ -3,6 +3,8 @@ package eu.genesismc.genesisftb;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Openable;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
@@ -31,6 +33,7 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
     public ArrayList<Location> buttons = new ArrayList<Location>();
     public ArrayList<String> foundList = new ArrayList<String>();
     public Boolean inGame = false;
+    public Boolean doorsOpen = false;
     public FileConfiguration config = this.getConfig();
 
     @Override
@@ -67,6 +70,10 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         final FileConfiguration config = this.getConfig();
         config.addDefault("settings.enabled", true);
         config.addDefault("settings.remove-button", true);
+        config.addDefault("settings.open-doors", true);
+        config.addDefault("settings.open-doors-end-game", false);
+        config.addDefault("settings.close-doors", true);
+        config.addDefault("settings.close-doors-first-button", true);
         config.addDefault("settings.announce-place", true);
         config.addDefault("settings.announce-remove", true);
         config.addDefault("settings.announce-reset", true);
@@ -79,7 +86,9 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         config.addDefault("settings.reset-message", "The game has been reset and all buttons have been removed.");
         config.addDefault("settings.end-message", "The game has ended! All buttons have been found.");
         config.addDefault("settings.reward-message", "You have been awarded prizes!");
+        config.addDefault("settings.doors-closed-message", "The arena doors have now been closed!");
         config.addDefault("rewards", "");
+        config.addDefault("doors", "");
 
         /*******************************
          * SQL SUPPORT - NOT IMPLEMENTED
@@ -102,6 +111,28 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
             preparedCode = preparedCode + alphabet.charAt(r.nextInt(alphabet.length()));
         }
         GenesisFTB.getPlugin().resetCode = preparedCode;
+    }
+
+    public void openDoors() {
+        for (Object openList : config.getList("doors")) {
+            Location loc = (Location) openList;
+            Block b = loc.getBlock();
+            Openable d = (Openable) b.getBlockData();
+            d.setOpen(true);
+            b.setBlockData(d);
+        }
+        doorsOpen = true;
+    }
+
+    public void closeDoors() {
+        for (Object openList : config.getList("doors")) {
+            Location loc = (Location) openList;
+            Block b = loc.getBlock();
+            Openable d = (Openable) b.getBlockData();
+            d.setOpen(false);
+            b.setBlockData(d);
+        }
+        doorsOpen = false;
     }
 
 }
