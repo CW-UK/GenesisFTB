@@ -10,11 +10,13 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public final class GenesisFTB extends JavaPlugin implements Listener, CommandExecutor {
 
     private static GenesisFTB plugin;
     private DataSource dataSource;
+    public String resetCode = "";
 
     public static GenesisFTB getPlugin() {
         return plugin;
@@ -48,6 +50,7 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
     public void onEnable() {
         plugin = this;
         loadDefaultConfig();
+        newResetCode();
         PluginManager pm = Bukkit.getServer().getPluginManager(); // register plugin manager
         this.getCommand("ftb").setExecutor(new CommandHandler());
         this.getCommand("ftb").setTabCompleter(new CommandHandler());
@@ -75,7 +78,9 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         config.addDefault("settings.start-message", "The game has started! There are %count% buttons to find!");
         config.addDefault("settings.reset-message", "The game has been reset and all buttons have been removed.");
         config.addDefault("settings.end-message", "The game has ended! All buttons have been found.");
+        config.addDefault("settings.reward-message", "You have been awarded prizes!");
         config.addDefault("rewards", "");
+
         /*******************************
          * SQL SUPPORT - NOT IMPLEMENTED
          ******************************//*
@@ -87,6 +92,16 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         config.addDefault("sql.password", "password");*/
         config.options().copyDefaults(true);
         saveConfig();
+    }
+
+    public void newResetCode() {
+        Random r = new Random();
+        String alphabet = "0123456789";
+        String preparedCode = "";
+        for (int i = 0; i < 5; i++) {
+            preparedCode = preparedCode + alphabet.charAt(r.nextInt(alphabet.length()));
+        }
+        GenesisFTB.getPlugin().resetCode = preparedCode;
     }
 
 }

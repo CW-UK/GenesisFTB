@@ -26,6 +26,7 @@ public class DataSource {
         hikari.setLeakDetectionThreshold(3000);
         hikari.setMaximumPoolSize(10);
         hikari.setConnectionTestQuery("SELECT 1;");
+        hikari.addDataSourceProperty("autoReconnect", true);
         hikari.setJdbcUrl("jdbc:sqlite:" + new File(GenesisFTB.getPlugin().getDataFolder(), "database.db"));
     }
 
@@ -71,6 +72,23 @@ public class DataSource {
             throwables.printStackTrace();
         }
         return 0;
+    }
+
+    public boolean emptyDatabase() {
+        try {
+            Connection connection = hikari.getConnection();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(
+                    "DELETE FROM ftb_scores;"
+            );
+            statement.close();
+            connection.close();
+            GenesisFTB.getPlugin().newResetCode();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public Connection getConnection() {

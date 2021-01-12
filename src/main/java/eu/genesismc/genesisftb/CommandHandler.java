@@ -149,6 +149,28 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             return true;
         }
 
+        /**************************
+         *  DATABASE RESET COMMAND
+         **************************/
+
+        if (args[0].equals("cleardatabase") && sender.hasPermission("genesisftb.admin") && sender.isOp()) {
+
+            if (args.length > 1) {
+                if (args[1].equals(GenesisFTB.getPlugin().resetCode)) {
+                    GenesisFTB.getDataSource().emptyDatabase();
+                    sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " The database has been reset!");
+                } else {
+                    sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " Invalid reset code.");
+                }
+            } else {
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN +
+                        " This will delete " + ChatColor.BOLD + "ALL DATA" + ChatColor.RESET + "! Confirm with " + ChatColor.YELLOW + "/ftb cleardatabase " + GenesisFTB.getPlugin().resetCode
+                );
+            }
+            return true;
+        }
+
+
         /*************************
          *  PLAYER LOOKUP COMMAND
          *************************/
@@ -183,6 +205,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 if (sender.hasPermission("genesisftb.admin")) {
                     ArrayList<String> tabCompletions = new ArrayList<String>();
                     tabCompletions.add("found");
+                    tabCompletions.add("cleardatabase");
                     tabCompletions.add("list");
                     tabCompletions.add("reload");
                     tabCompletions.add("reset");

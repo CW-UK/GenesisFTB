@@ -67,7 +67,7 @@ public class PlayerInteract implements Listener, Cancellable {
                 }
 
                 for (Player pl : Bukkit.getOnlinePlayers()) {
-                    pl.sendMessage("" +
+                    pl.sendMessage(""+
                             color(config.getString("settings.prefix")) + " " +
                             color(config.getString("settings.found-message").replace("%player%", player).replace("%count%", String.valueOf(totalButtons)))
                     );
@@ -76,9 +76,13 @@ public class PlayerInteract implements Listener, Cancellable {
                 Location loc = e.getClickedBlock().getLocation();
                 GenesisFTB.getPlugin().foundList.add("&f" + player + " &efound a button at &fx" + loc.getX() + " y" + loc.getY() + " z" + loc.getZ());
 
+                p.sendMessage(""+
+                        color(config.getString("settings.prefix")) + " " +
+                        color(config.getString("settings.reward-message"))
+                );
+
                 for (String str : GenesisFTB.getPlugin().getConfig().getStringList("rewards")) {
                     String rewardCommand = str.replace("%player%", player);
-                    Bukkit.getLogger().info(ChatColor.YELLOW + "[GenesisFTB] " + ChatColor.AQUA + "Giving: " + rewardCommand);
                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), rewardCommand);
                 }
 
