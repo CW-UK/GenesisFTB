@@ -1,6 +1,7 @@
 package eu.genesismc.genesisftb;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -41,6 +42,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
 
         if (args[0].equals("reload") && sender.hasPermission("genesisftb.admin")) {
             GenesisFTB.getPlugin().reloadConfig();
+            GenesisFTB.getPlugin().config = GenesisFTB.getPlugin().getConfig();
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " Configuration reloaded.");
             return true;
         }
@@ -74,8 +76,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
                 return true;
 
-            }
-            catch (ClassCastException exc) {
+            } catch (ClassCastException exc) {
                 sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
                 return true;
             }
@@ -305,8 +306,10 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
         if (cmd.getName().equalsIgnoreCase("ftb")) {
             if (args.length >= 1) {
                 if (sender.hasPermission("genesisftb.admin")) {
-                    final List<String> commands = Arrays.asList("found", "cleardatabase", "list", "reload", "reset", "opendoors",
-                            "closedoors", "doordel", "dooradd", "start", "broadcast");
+                    final List<String> commands = Arrays.asList(
+                            "found", "cleardatabase", "list", "reload", "reset", "opendoors",
+                            "closedoors", "doordel", "dooradd", "start", "broadcast"
+                    );
 
                     return (args.length < 2) ? StringUtil.copyPartialMatches(args[0], commands, new ArrayList<>()) : null;
                 }

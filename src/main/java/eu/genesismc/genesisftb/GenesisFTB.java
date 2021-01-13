@@ -12,6 +12,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public final class GenesisFTB extends JavaPlugin implements Listener, CommandExecutor {
@@ -87,8 +88,8 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         config.addDefault("settings.end-message", "The game has ended! All buttons have been found.");
         config.addDefault("settings.reward-message", "You have been awarded prizes!");
         config.addDefault("settings.doors-closed-message", "The arena doors have now been closed!");
-        config.addDefault("rewards", "");
-        config.addDefault("doors", "");
+        config.addDefault("rewards", Collections.emptyList());
+        config.addDefault("doors", Collections.emptyList());
 
         /*******************************
          * SQL SUPPORT - NOT IMPLEMENTED
@@ -114,25 +115,35 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
     }
 
     public void openDoors() {
-        for (Object openList : config.getList("doors")) {
-            Location loc = (Location) openList;
-            Block b = loc.getBlock();
-            Openable d = (Openable) b.getBlockData();
-            d.setOpen(true);
-            b.setBlockData(d);
+        try {
+            for (Object openList : config.getList("doors")) {
+                Location loc = (Location) openList;
+                Block b = loc.getBlock();
+                Openable d = (Openable) b.getBlockData();
+                d.setOpen(true);
+                b.setBlockData(d);
+            }
+            doorsOpen = true;
         }
-        doorsOpen = true;
+        catch (NullPointerException exc) {
+            Bukkit.getServer().getLogger().info("GenesisFTB: No doors!");
+        }
     }
 
     public void closeDoors() {
-        for (Object openList : config.getList("doors")) {
-            Location loc = (Location) openList;
-            Block b = loc.getBlock();
-            Openable d = (Openable) b.getBlockData();
-            d.setOpen(false);
-            b.setBlockData(d);
+        try {
+            for (Object openList : config.getList("doors")) {
+                Location loc = (Location) openList;
+                Block b = loc.getBlock();
+                Openable d = (Openable) b.getBlockData();
+                d.setOpen(false);
+                b.setBlockData(d);
+            }
+            doorsOpen = false;
         }
-        doorsOpen = false;
+        catch (NullPointerException exc) {
+            Bukkit.getServer().getLogger().info("GenesisFTB: No doors!");
+        }
     }
 
 }
