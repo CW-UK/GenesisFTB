@@ -66,8 +66,8 @@ public class PlayerInteract implements Listener, Cancellable {
                     e.getClickedBlock().setType(Material.AIR);
                 }
 
-                if (config.getBoolean("settings.close-doors-first-button") && GenesisFTB.getPlugin().foundList.size() == 0) {
-                    GenesisFTB.getPlugin().closeDoors();
+                if (config.getBoolean("settings.close-maindoors-first-button") && GenesisFTB.getPlugin().foundList.size() == 0) {
+                    GenesisFTB.getPlugin().openDoors("main", false);
                 }
 
                 for (Player pl : Bukkit.getOnlinePlayers()) {
@@ -75,7 +75,7 @@ public class PlayerInteract implements Listener, Cancellable {
                             color(config.getString("settings.prefix")) + " " +
                             color(config.getString("settings.found-message").replace("%player%", player).replace("%count%", String.valueOf(totalButtons)))
                     );
-                    if (GenesisFTB.getPlugin().doorsOpen) {
+                    if (GenesisFTB.getPlugin().mainDoorsOpen) {
                         pl.sendMessage(""+
                                 color(config.getString("settings.prefix")) + " " +
                                 color(config.getString("settings.doors-closed-message"))
@@ -106,9 +106,8 @@ public class PlayerInteract implements Listener, Cancellable {
                                 color(config.getString("settings.end-message").replace("%player%", player).replace("%count%", String.valueOf(totalButtons)))
                         );
                     }
-                    if (config.getBoolean("settings.open-doors-end-game")) {
-                        GenesisFTB.getPlugin().openDoors();
-                    }
+                    GenesisFTB.getPlugin().openDoors("main", config.getBoolean("settings.set-maindoors-on-end"));
+                    GenesisFTB.getPlugin().openDoors("game", config.getBoolean("settings.set-gamedoors-on-end"));
                 }
 
             }

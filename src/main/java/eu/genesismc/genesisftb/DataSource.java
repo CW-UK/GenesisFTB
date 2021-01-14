@@ -24,7 +24,7 @@ public class DataSource {
 
     public void startSQL() {
         hikari.setLeakDetectionThreshold(3000);
-        hikari.setMaximumPoolSize(10);
+        hikari.setMaximumPoolSize(3);
         hikari.setConnectionTestQuery("SELECT 1;");
         hikari.addDataSourceProperty("autoReconnect", true);
         hikari.setJdbcUrl("jdbc:sqlite:" + new File(GenesisFTB.getPlugin().getDataFolder(), "database.db"));

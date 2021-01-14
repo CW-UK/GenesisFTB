@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Openable;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,7 +35,8 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
     public ArrayList<Location> buttons = new ArrayList<Location>();
     public ArrayList<String> foundList = new ArrayList<String>();
     public Boolean inGame = false;
-    public Boolean doorsOpen = false;
+    public Boolean mainDoorsOpen = false;
+    public Boolean gameDoorsOpen = false;
     public FileConfiguration config = this.getConfig();
 
     @Override
@@ -71,10 +73,11 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         final FileConfiguration config = this.getConfig();
         config.addDefault("settings.enabled", true);
         config.addDefault("settings.remove-button", true);
-        config.addDefault("settings.open-doors", true);
-        config.addDefault("settings.open-doors-end-game", false);
-        config.addDefault("settings.close-doors", true);
-        config.addDefault("settings.close-doors-first-button", true);
+        config.addDefault("settings.set-maindoors-on-start", true); // true = open
+        config.addDefault("settings.set-maindoors-on-end", false);  // false = closed
+        config.addDefault("settings.set-gamedoors-on-start", false);
+        config.addDefault("settings.set-gamedoors-on-end", false);
+        config.addDefault("settings.close-maindoors-first-button", true);
         config.addDefault("settings.announce-place", true);
         config.addDefault("settings.announce-remove", true);
         config.addDefault("settings.announce-reset", true);
@@ -89,7 +92,8 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         config.addDefault("settings.reward-message", "You have been awarded prizes!");
         config.addDefault("settings.doors-closed-message", "The arena doors have now been closed!");
         config.addDefault("rewards", Collections.emptyList());
-        config.addDefault("doors", Collections.emptyList());
+        config.addDefault("maindoors", Collections.emptyList());
+        config.addDefault("gamedoors", Collections.emptyList());
 
         /*******************************
          * SQL SUPPORT - NOT IMPLEMENTED
@@ -114,32 +118,19 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         GenesisFTB.getPlugin().resetCode = preparedCode;
     }
 
-    public void openDoors() {
+    public void openDoors(String doorTypes, Boolean state) {
+        Bukkit.getLogger().info("Trying to open " + doorTypes + "doors");
         try {
-            for (Object openList : config.getList("doors")) {
+            for (Object openList : config.getList(doorTypes + "doors")) {
                 Location loc = (Location) openList;
                 Block b = loc.getBlock();
                 Openable d = (Openable) b.getBlockData();
-                d.setOpen(true);
+                Bukkit.getLogger().info("Opening " + b.getType() + " at " + loc);
+                d.setOpen(state);
                 b.setBlockData(d);
             }
-            doorsOpen = true;
-        }
-        catch (NullPointerException exc) {
-            Bukkit.getServer().getLogger().info("GenesisFTB: No doors!");
-        }
-    }
-
-    public void closeDoors() {
-        try {
-            for (Object openList : config.getList("doors")) {
-                Location loc = (Location) openList;
-                Block b = loc.getBlock();
-                Openable d = (Openable) b.getBlockData();
-                d.setOpen(false);
-                b.setBlockData(d);
-            }
-            doorsOpen = false;
+            if (doorTypes.equals("main")) { mainDoorsOpen = state; }
+            else { gameDoorsOpen = state; }
         }
         catch (NullPointerException exc) {
             Bukkit.getServer().getLogger().info("GenesisFTB: No doors!");
