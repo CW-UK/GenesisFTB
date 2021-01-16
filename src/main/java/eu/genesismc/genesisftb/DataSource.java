@@ -1,6 +1,7 @@
 package eu.genesismc.genesisftb;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
@@ -74,6 +75,26 @@ public class DataSource {
         return 0;
     }
 
+    public void updateWins(UUID id, String name, Integer wins) {
+        try {
+            Connection updateConnection = GenesisFTB.getDataSource().getConnection();
+            String uuid = id.toString();
+            PreparedStatement updateStatement = updateConnection.prepareStatement(
+                    "REPLACE INTO ftb_scores (UUID, name, wins) VALUES (?,?,?);"
+            );
+            updateStatement.setString(1, uuid);
+            updateStatement.setString(2, name);
+            updateStatement.setInt(3, wins);
+            updateStatement.executeUpdate();
+            updateConnection.commit();
+            updateStatement.close();
+            updateConnection.close();
+            Bukkit.getLogger().info("[GenesisFTB] " + name + " found a button. Updated count to " + wins);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public boolean emptyDatabase() {
         try {
             Connection connection = hikari.getConnection();
@@ -83,7 +104,7 @@ public class DataSource {
             );
             statement.close();
             connection.close();
-            GenesisFTB.getPlugin().newResetCode();
+            GenesisFTB.utils().newResetCode();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

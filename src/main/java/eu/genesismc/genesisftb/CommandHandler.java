@@ -36,6 +36,16 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
         }
 
         /*************************
+         *  TOOL COMMAND
+         *************************/
+
+        if (args[0].equals("tool") && sender.hasPermission("genesisftb.admin")) {
+            GenesisFTB.getPlugin().getItemTools().giveStackingTool((Player) sender);
+            sender.sendMessage(ChatColor.GOLD + "The FTB tool has been added to your inventory.");
+            return true;
+        }
+
+        /*************************
          *  RELOAD COMMAND
          *************************/
 
@@ -44,123 +54,6 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             GenesisFTB.getPlugin().config = GenesisFTB.getPlugin().getConfig();
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " Configuration reloaded.");
             return true;
-        }
-
-        /***********************
-         *  ADDMAINDOOR COMMAND
-         ***********************/
-
-        if (args[0].equals("addmaindoor") && sender.hasPermission("genesisftb.admin")) {
-
-            try {
-                Block block = player.getTargetBlock(null, 50);
-                Openable toOpen = (Openable) block.getBlockData();
-                if (!(block == null) && toOpen instanceof Openable) {
-
-                    List list = config.getList("maindoors");
-                    if (list.contains(block.getLocation())) {
-                        sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That door is already linked.");
-                        return true;
-                    }
-
-                    list.add(block.getLocation());
-                    Location loc = block.getLocation();
-                    String doorBlock = block.getType().toString();
-                    config.set("maindoors", list);
-                    GenesisFTB.getPlugin().saveConfig();
-                    sender.sendMessage(
-                            color(config.getString("settings.prefix")) +
-                                    ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is now a main door.");
-                    return true;
-                }
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
-                return true;
-
-            } catch (ClassCastException exc) {
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
-                return true;
-            }
-        }
-
-        /***********************
-         *  ADDGAMEDOOR COMMAND
-         ***********************/
-
-        if (args[0].equals("addgamedoor") && sender.hasPermission("genesisftb.admin")) {
-
-            try {
-                Block block = player.getTargetBlock(null, 50);
-                Openable toOpen = (Openable) block.getBlockData();
-                if (!(block == null) && toOpen instanceof Openable) {
-
-                    List list = config.getList("gamedoors");
-                    if (list.contains(block.getLocation())) {
-                        sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That door is already linked.");
-                        return true;
-                    }
-
-                    list.add(block.getLocation());
-                    Location loc = block.getLocation();
-                    String doorBlock = block.getType().toString();
-                    config.set("gamedoors", list);
-                    GenesisFTB.getPlugin().saveConfig();
-                    sender.sendMessage(
-                            color(config.getString("settings.prefix")) +
-                                    ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is now a game door.");
-                    return true;
-                }
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
-                return true;
-
-            } catch (ClassCastException exc) {
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
-                return true;
-            }
-        }
-
-
-        /*******************
-         *  REMDOOR COMMAND
-         *******************/
-
-        if (args[0].equals("remdoor") && sender.hasPermission("genesisftb.admin")) {
-
-            try {
-                Block block = player.getTargetBlock(null, 50);
-                Openable toOpen = (Openable) block.getBlockData();
-                String doorType = "main";
-
-                List list = config.getList("maindoors");
-                if (!list.contains(block.getLocation())) { // Not a maindoor, try gamedoor next
-                    list = config.getList("gamedoors");
-                    if (list.contains(block.getLocation())) {
-                        doorType = "gamedoors";
-                    } else { // Not a maindoor or gamedoor either
-                        sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That door is not part of Find the Button.");
-                        return true;
-                    }
-                }
-
-                list.remove(block.getLocation());
-                Location loc = block.getLocation();
-                String doorBlock = block.getType().toString();
-                config.set(doorType, list);
-                GenesisFTB.getPlugin().saveConfig();
-                sender.sendMessage(
-                        color(config.getString("settings.prefix")) +
-                                ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is no longer a " + doorType + " door.");
-                return true;
-
-
-            }
-            catch (ClassCastException exc) {
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable!");
-                return true;
-            }
-            catch (NullPointerException npe) {
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That door is not part of Find the Button.");
-                return true;
-            }
         }
 
         /*************************
@@ -173,7 +66,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 return true;
             }
             if (args[1].equals("main") || args[1].equals("game")) {
-                GenesisFTB.getPlugin().openDoors(args[1], true);
+                GenesisFTB.utils().openDoors(args[1], true);
                 sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Opening " + args[1] + " doors..");
                 return true;
             }
@@ -191,7 +84,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 return true;
             }
             if (args[1].equals("main") || args[1].equals("game")) {
-                GenesisFTB.getPlugin().openDoors(args[1], false);
+                GenesisFTB.utils().openDoors(args[1], false);
                 sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Closing game doors..");
                 return true;
             }
@@ -223,8 +116,8 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             }
 
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Setting all doors..");
-            GenesisFTB.getPlugin().openDoors("main", config.getBoolean("settings.set-maindoors-on-start"));
-            GenesisFTB.getPlugin().openDoors("game", config.getBoolean("settings.set-gamedoors-on-start"));
+            GenesisFTB.utils().openDoors("main", config.getBoolean("settings.set-maindoors-on-start"));
+            GenesisFTB.utils().openDoors("game", config.getBoolean("settings.set-gamedoors-on-start"));
 
             return true;
         }
@@ -247,8 +140,8 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 );
             }
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Setting all doors..");
-            GenesisFTB.getPlugin().openDoors("main", config.getBoolean("settings.set-maindoors-on-end"));
-            GenesisFTB.getPlugin().openDoors("game", config.getBoolean("settings.set-gamedoors-on-end"));
+            GenesisFTB.utils().openDoors("main", config.getBoolean("settings.set-maindoors-on-end"));
+            GenesisFTB.utils().openDoors("game", config.getBoolean("settings.set-gamedoors-on-end"));
             return true;
         }
 
@@ -277,12 +170,10 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
         if (args[0].equals("broadcast") && sender.hasPermission("genesisftb.admin")) {
 
             String broadcast = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
-
             if (broadcast.length() < 1) {
                 sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " You need to provide a message.");
                 return true;
             }
-
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 pl.sendMessage("" +
                         color(config.getString("settings.prefix") + " " + ChatColor.RESET + broadcast)
@@ -369,7 +260,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 if (args.length == 1) {
                     final List<String> commands = Arrays.asList(
                             "found", "cleardatabase", "list", "reload", "reset", "opendoors",
-                            "closedoors", "remdoor", "addmaindoor", "addgamedoor", "start", "broadcast"
+                            "closedoors", "start", "broadcast"
                     );
                     return StringUtil.copyPartialMatches(args[0], commands, new ArrayList<>());
                 }

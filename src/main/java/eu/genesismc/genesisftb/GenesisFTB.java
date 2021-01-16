@@ -3,24 +3,31 @@ package eu.genesismc.genesisftb;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Openable;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import eu.genesismc.genesisftb.ItemTools;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public final class GenesisFTB extends JavaPlugin implements Listener, CommandExecutor {
+public final class GenesisFTB extends JavaPlugin implements Listener {
 
     private static GenesisFTB plugin;
     private DataSource dataSource;
+    private Utils utils;
     public String resetCode = "";
+
+    private static ItemTools itemTools;
+    public static ItemTools getItemTools() {
+        return itemTools;
+    }
 
     public static GenesisFTB getPlugin() {
         return plugin;
@@ -28,10 +35,17 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
     public static DataSource getDataSource() {
         return getInstance().dataSource;
     }
+    public static Utils utils() {
+        return getInstance().utils;
+    }
     public static GenesisFTB getInstance() {
         return (GenesisFTB) Bukkit.getPluginManager().getPlugin("GenesisFTB");
     }
+    public NamespacedKey getToolKey() {
+        return toolKey;
+    }
 
+    private final NamespacedKey toolKey = new NamespacedKey(this, "ftb-tool");
     public ArrayList<Location> buttons = new ArrayList<Location>();
     public ArrayList<String> foundList = new ArrayList<String>();
     public Boolean inGame = false;
@@ -56,17 +70,19 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
     public void onEnable() {
         plugin = this;
         loadDefaultConfig();
-        newResetCode();
         PluginManager pm = Bukkit.getServer().getPluginManager(); // register plugin manager
         this.getCommand("ftb").setExecutor(new CommandHandler());
         this.getCommand("ftb").setTabCompleter(new CommandHandler());
-        pm.registerEvents(this, plugin);
-        pm.registerEvents(new PlayerInteract(), plugin);
-        pm.registerEvents(new BlockPlace(), plugin);
+        pm.registerEvents(this, this);
+        pm.registerEvents(new PlayerInteract(), this);
+        pm.registerEvents(new BlockPlace(), this);
         new Holograms().register();
         dataSource = new DataSource();
         dataSource.createTable();
+        itemTools = new ItemTools(this);
+        utils = new Utils();
         getLogger().info(ChatColor.GREEN + "GenesisFTB" + ChatColor.AQUA + ChatColor.BOLD + " successfully loaded!");
+        GenesisFTB.utils().newResetCode();
     }
 
     public void loadDefaultConfig() {
@@ -106,35 +122,6 @@ public final class GenesisFTB extends JavaPlugin implements Listener, CommandExe
         config.addDefault("sql.password", "password");*/
         config.options().copyDefaults(true);
         saveConfig();
-    }
-
-    public void newResetCode() {
-        Random r = new Random();
-        String alphabet = "0123456789";
-        String preparedCode = "";
-        for (int i = 0; i < 5; i++) {
-            preparedCode = preparedCode + alphabet.charAt(r.nextInt(alphabet.length()));
-        }
-        GenesisFTB.getPlugin().resetCode = preparedCode;
-    }
-
-    public void openDoors(String doorTypes, Boolean state) {
-        Bukkit.getLogger().info("Trying to open " + doorTypes + "doors");
-        try {
-            for (Object openList : config.getList(doorTypes + "doors")) {
-                Location loc = (Location) openList;
-                Block b = loc.getBlock();
-                Openable d = (Openable) b.getBlockData();
-                Bukkit.getLogger().info("Opening " + b.getType() + " at " + loc);
-                d.setOpen(state);
-                b.setBlockData(d);
-            }
-            if (doorTypes.equals("main")) { mainDoorsOpen = state; }
-            else { gameDoorsOpen = state; }
-        }
-        catch (NullPointerException exc) {
-            Bukkit.getServer().getLogger().info("GenesisFTB: No doors!");
-        }
     }
 
 }
