@@ -37,7 +37,7 @@ public class PlayerInteract implements Listener, Cancellable {
                  **************************/
                 if (GenesisFTB.getItemTools().isStackingTool(p.getInventory().getItemInMainHand())) {
                     if (!p.hasPermission("genesisftb.admin")) { return; }
-                    if (!(e.getHand() == EquipmentSlot.OFF_HAND)) { return; }
+                    if (e.getHand() == EquipmentSlot.OFF_HAND) { return; }
                     if (p.isOp()) {
                         if (p.isSneaking()) {
                             GenesisFTB.getItemTools().shiftMode(p);

@@ -3,8 +3,6 @@ package eu.genesismc.genesisftb;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.Openable;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -39,7 +37,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  TOOL COMMAND
          *************************/
 
-        if (args[0].equals("tool") && sender.hasPermission("genesisftb.admin") && sender.isOp()) {
+        if (args[0].equals("tool") && hasMainPerm(sender) && sender.isOp()) {
             GenesisFTB.getPlugin().getItemTools().giveStackingTool((Player) sender);
             sender.sendMessage(ChatColor.GOLD + "The FTB tool has been added to your inventory.");
             return true;
@@ -49,7 +47,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  RELOAD COMMAND
          *************************/
 
-        if (args[0].equals("reload") && sender.hasPermission("genesisftb.admin")) {
+        if (args[0].equals("reload") && hasMainPerm(sender)) {
             GenesisFTB.getPlugin().reloadConfig();
             GenesisFTB.getPlugin().config = GenesisFTB.getPlugin().getConfig();
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " Configuration reloaded.");
@@ -60,7 +58,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  OPENDOORS COMMAND
          *************************/
 
-        if (args[0].equals("opendoors") && sender.hasPermission("genesisftb.admin")) {
+        if (args[0].equals("opendoors") && hasMainPerm(sender)) {
             if (args.length < 2) {
                 sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Specify door type: /ftb opendoors <main|game>");
                 return true;
@@ -78,7 +76,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  CLOSEDOORS COMMAND
          *************************/
 
-        if (args[0].equals("closedoors") && sender.hasPermission("genesisftb.admin")) {
+        if (args[0].equals("closedoors") && hasMainPerm(sender)) {
             if (args.length < 2) {
                 sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Specify door type: /ftb closedoors <main|game>");
                 return true;
@@ -96,7 +94,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  START COMMAND
          *************************/
 
-        if (args[0].equals("start") && sender.hasPermission("genesisftb.admin")) {
+        if (args[0].equals("start") && hasMainPerm(sender)) {
             int totalButtons = GenesisFTB.getPlugin().buttons.size();
             if (totalButtons == 0) {
                 sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " You can't start a game with no buttons!");
@@ -126,7 +124,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  RESET COMMAND
          *************************/
 
-        if (args[0].equals("reset") && sender.hasPermission("genesisftb.admin")) {
+        if (args[0].equals("reset") && hasMainPerm(sender)) {
             for (Location l : GenesisFTB.getPlugin().buttons) {
                 l.getBlock().setType(Material.AIR);
             }
@@ -149,7 +147,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  LIST COMMAND
          *************************/
 
-        if (args[0].equals("list") && sender.hasPermission("genesisftb.admin")) {
+        if (args[0].equals("list") && hasMainPerm(sender)) {
             if (GenesisFTB.getPlugin().buttons.size() < 1) {
                 sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " No buttons have been placed.");
                 return true;
@@ -167,7 +165,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  BROADCAST COMMAND
          *************************/
 
-        if (args[0].equals("broadcast") && sender.hasPermission("genesisftb.admin")) {
+        if (args[0].equals("broadcast") && hasMainPerm(sender)) {
 
             String broadcast = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
             if (broadcast.length() < 1) {
@@ -186,7 +184,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  FOUND COMMAND
          *************************/
 
-        if (args[0].equals("found") && sender.hasPermission("genesisftb.admin")) {
+        if (args[0].equals("found") && hasMainPerm(sender)) {
 
             String preMessage = GenesisFTB.getPlugin().inGame ? "In this game, " : "In the last game, ";
             String postMessage = GenesisFTB.getPlugin().inGame ? "have been" : "were";
@@ -207,7 +205,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  DATABASE RESET COMMAND
          **************************/
 
-        if (args[0].equals("cleardatabase") && sender.hasPermission("genesisftb.admin") && sender.isOp()) {
+        if (args[0].equals("cleardatabase") && hasMainPerm(sender) && sender.isOp()) {
 
             if (args.length > 1) {
                 if (args[1].equals(GenesisFTB.getPlugin().resetCode)) {
@@ -228,7 +226,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  SETSCORE COMMAND
          *************************/
 
-        if (args[0].equals("setscore") && sender.hasPermission("genesisftb.admin") && sender.isOp()) {
+        if (args[0].equals("setscore") && hasMainPerm(sender) && sender.isOp()) {
             UUID uuid;
             String name;
             if (args.length < 3) {
@@ -285,10 +283,15 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
 
+    public boolean hasMainPerm(CommandSender s) {
+        Player p = (Player) s;
+        return p.hasPermission("genesisftb.admin");
+    }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (cmd.getName().equalsIgnoreCase("ftb")) {
-            if (sender.hasPermission("genesisftb.admin")) {
+            if (hasMainPerm(sender)) {
                 // First param - 0
                 if (args.length == 1) {
                     final List<String> commands = Arrays.asList(
