@@ -91,8 +91,10 @@ public final class GenesisFTB extends JavaPlugin implements Listener {
         config.addDefault("settings.remove-button", true);
         config.addDefault("settings.set-maindoors-on-start", true); // true = open
         config.addDefault("settings.set-maindoors-on-end", false);  // false = closed
+        config.addDefault("settings.set-maindoors-on-reset", false);
         config.addDefault("settings.set-gamedoors-on-start", false);
         config.addDefault("settings.set-gamedoors-on-end", false);
+        config.addDefault("settings.set-gamedoors-on-reset", false);
         config.addDefault("settings.close-maindoors-first-button", true);
         config.addDefault("settings.announce-place", true);
         config.addDefault("settings.announce-remove", true);

@@ -138,8 +138,8 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 );
             }
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Setting all doors..");
-            GenesisFTB.utils().openDoors("main", config.getBoolean("settings.set-maindoors-on-end"));
-            GenesisFTB.utils().openDoors("game", config.getBoolean("settings.set-gamedoors-on-end"));
+            GenesisFTB.utils().openDoors("main", config.getBoolean("settings.set-maindoors-on-reset"));
+            GenesisFTB.utils().openDoors("game", config.getBoolean("settings.set-gamedoors-on-reset"));
             return true;
         }
 
