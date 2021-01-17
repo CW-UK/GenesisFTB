@@ -23,13 +23,14 @@ public class ItemTools {
         ItemStack is = new ItemStack(Material.BLAZE_ROD, 1);
         is.addUnsafeEnchantment(Enchantment.VANISHING_CURSE, 1);
         ItemMeta itemMeta = is.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "FTB Setup Tool");
+        itemMeta.setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "FTB Arena Setup Tool");
         itemMeta.setLore(Arrays.asList(
-                ChatColor.GREEN + "Configuration tool for setting",
+                " ",
+                ChatColor.GREEN + "Shiny stick used for setting",
                 ChatColor.GREEN + "up Find the Button arenas.",
                 " ",
-                ChatColor.GOLD + "Right-click to perform action" ,
-                ChatColor.GOLD + "Shift-right-click to change mode."));
+                ChatColor.GOLD + "- Right-click to perform action" ,
+                ChatColor.GOLD + "- Shift-right-click to change mode"));
         itemMeta.getPersistentDataContainer().set(ftb.getToolKey(), PersistentDataType.INTEGER, 1);
         is.setItemMeta(itemMeta);
         return is;

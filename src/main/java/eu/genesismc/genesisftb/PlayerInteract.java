@@ -36,22 +36,24 @@ public class PlayerInteract implements Listener, Cancellable {
                  *  ADMIN TOOL CHECKS
                  **************************/
                 if (GenesisFTB.getItemTools().isStackingTool(p.getInventory().getItemInMainHand())) {
-                    if (!p.hasPermission("genesisftb.admin") || e.getHand() == EquipmentSlot.OFF_HAND) {
-                        return;
-                    }
-                    if (p.isSneaking()) {
-                        GenesisFTB.getItemTools().shiftMode(p);
+                    if (!p.hasPermission("genesisftb.admin")) { return; }
+                    if (!(e.getHand() == EquipmentSlot.OFF_HAND)) { return; }
+                    if (p.isOp()) {
+                        if (p.isSneaking()) {
+                            GenesisFTB.getItemTools().shiftMode(p);
+                            e.setUseInteractedBlock(Event.Result.DENY);
+                            e.setCancelled(true);
+                            return;
+                        }
+                        if (!(e.getClickedBlock().getBlockData() instanceof Openable)) {
+                            p.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
+                            return;
+                        }
+                        GenesisFTB.getItemTools().doAction(p, e.getClickedBlock());
                         e.setUseInteractedBlock(Event.Result.DENY);
                         e.setCancelled(true);
                         return;
                     }
-                    if (!(e.getClickedBlock().getBlockData() instanceof Openable)) {
-                        p.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
-                        return;
-                    }
-                    GenesisFTB.getItemTools().doAction(p, e.getClickedBlock());
-                    e.setUseInteractedBlock(Event.Result.DENY);
-                    e.setCancelled(true);
                 }
 
                 /***************************

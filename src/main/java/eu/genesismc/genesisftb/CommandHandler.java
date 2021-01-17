@@ -39,7 +39,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  TOOL COMMAND
          *************************/
 
-        if (args[0].equals("tool") && sender.hasPermission("genesisftb.admin")) {
+        if (args[0].equals("tool") && sender.hasPermission("genesisftb.admin") && sender.isOp()) {
             GenesisFTB.getPlugin().getItemTools().giveStackingTool((Player) sender);
             sender.sendMessage(ChatColor.GOLD + "The FTB tool has been added to your inventory.");
             return true;
@@ -224,6 +224,38 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             return true;
         }
 
+        /*************************
+         *  SETSCORE COMMAND
+         *************************/
+
+        if (args[0].equals("setscore") && sender.hasPermission("genesisftb.admin") && sender.isOp()) {
+            UUID uuid;
+            String name;
+            if (args.length < 3) {
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " You need to specify a new score. Zero removes player from the database.");
+                return true;
+            }
+            try {
+                uuid = Bukkit.getPlayer(args[1]).getUniqueId();
+                name = Bukkit.getPlayer(args[1]).getName();
+            }
+            catch (NullPointerException e) {
+                sender.sendMessage(ChatColor.GOLD + "Player " + ChatColor.WHITE + args[1] + ChatColor.GOLD + " is not known to the server.");
+                return true;
+            }
+            int wins = GenesisFTB.getDataSource().getWins(uuid);
+            int newWins = Integer.parseInt(args[2]);
+            if (newWins < 1) {
+                sender.sendMessage(ChatColor.WHITE + name + ChatColor.GOLD + " has been removed from the database.");
+                GenesisFTB.getDataSource().removeUser(uuid, name, newWins);
+            }
+            else {
+                sender.sendMessage(ChatColor.WHITE + name + ChatColor.GOLD + "'s score changed from " + ChatColor.WHITE + wins + ChatColor.GOLD + " to " + ChatColor.WHITE + newWins);
+                GenesisFTB.getDataSource().updateWins(uuid, name, newWins);
+            }
+            return true;
+
+        }
 
         /*************************
          *  PLAYER LOOKUP COMMAND
@@ -245,6 +277,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             return true;
 
         }
+
         return false;
     }
 
@@ -260,7 +293,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 if (args.length == 1) {
                     final List<String> commands = Arrays.asList(
                             "found", "cleardatabase", "list", "reload", "reset", "opendoors",
-                            "closedoors", "start", "broadcast"
+                            "closedoors", "start", "broadcast", "setscore"
                     );
                     return StringUtil.copyPartialMatches(args[0], commands, new ArrayList<>());
                 }

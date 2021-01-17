@@ -95,6 +95,24 @@ public class DataSource {
         }
     }
 
+    public void removeUser(UUID id, String name, Integer wins) {
+        try {
+            Connection updateConnection = GenesisFTB.getDataSource().getConnection();
+            String uuid = id.toString();
+            PreparedStatement updateStatement = updateConnection.prepareStatement(
+                    "DELETE FROM ftb_scores WHERE uuid=?;"
+            );
+            updateStatement.setString(1, uuid);
+            updateStatement.executeUpdate();
+            updateConnection.commit();
+            updateStatement.close();
+            updateConnection.close();
+            Bukkit.getLogger().info("[GenesisFTB] " + name + " removed from the database.");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public boolean emptyDatabase() {
         try {
             Connection connection = hikari.getConnection();
