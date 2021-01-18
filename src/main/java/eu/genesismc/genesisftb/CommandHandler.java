@@ -56,6 +56,30 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
         }
 
         /*************************
+         *  TOGGLE COMMAND
+         *************************/
+
+        if (args[0].equals("toggle") && hasMainPerm(sender)) {
+            GenesisFTB.getPlugin().config = GenesisFTB.getPlugin().getConfig();
+
+            if (GenesisFTB.getPlugin().inGame) {
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + "You cannot toggle FTB while a game is running!");
+                return true;
+            }
+
+            if (GenesisFTB.getPlugin().gameMode) {
+                GenesisFTB.getPlugin().gameMode = false;
+                GenesisFTB.utils().sendToAdmins(ChatColor.RED + "FTB has now been disabled by " + sender.getName(), true);
+            }
+            else {
+                GenesisFTB.getPlugin().gameMode = true;
+                GenesisFTB.utils().sendToAdmins(ChatColor.GREEN + "FTB has been enabled by " + sender.getName(), true);
+            }
+
+            return true;
+        }
+
+        /*************************
          *  OPENDOORS COMMAND
          *************************/
 
@@ -103,6 +127,10 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             }
             if (GenesisFTB.getPlugin().inGame) {
                 sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " A game is already in progress!");
+                return true;
+            }
+            if (!GenesisFTB.getPlugin().gameMode) {
+                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " You can't start a game as FTB is currently disabled!");
                 return true;
             }
             GenesisFTB.getPlugin().inGame = true;
@@ -298,7 +326,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 if (args.length == 1) {
                     final List<String> commands = Arrays.asList(
                             "found", "cleardatabase", "list", "reload", "reset", "opendoors",
-                            "closedoors", "start", "broadcast", "setscore"
+                            "closedoors", "start", "broadcast", "setscore", "toggle"
                     );
                     return StringUtil.copyPartialMatches(args[0], commands, new ArrayList<>());
                 }

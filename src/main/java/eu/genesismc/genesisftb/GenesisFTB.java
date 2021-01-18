@@ -23,6 +23,7 @@ public final class GenesisFTB extends JavaPlugin implements Listener {
     private DataSource dataSource;
     private Utils utils;
     public String resetCode = "";
+    public boolean gameMode = true;
 
     private static ItemTools itemTools;
     public static ItemTools getItemTools() {

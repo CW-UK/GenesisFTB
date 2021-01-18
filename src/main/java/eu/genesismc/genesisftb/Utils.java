@@ -116,6 +116,13 @@ public class Utils {
         }
     }
 
+    public void sendToAdmins(String msg, Boolean prefix) {
+        String newMsg;
+        if (prefix) { newMsg = color(GenesisFTB.getPlugin().config.getString("settings.prefix") + " " + msg); }
+        else { newMsg = color(msg); }
+        Bukkit.broadcast(newMsg, "genesisftb.admin");
+    }
+
     public String color(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }

@@ -26,7 +26,7 @@ public class PlayerInteract implements Listener, Cancellable {
         final Block block = e.getClickedBlock();
         if (block == null) return;
 
-        if (WorldGuardManager.isFTB(e.getClickedBlock().getLocation())) {
+        if (WorldGuardManager.isFTB(e.getClickedBlock().getLocation()) && GenesisFTB.getPlugin().gameMode) {
 
             FileConfiguration config = GenesisFTB.getPlugin().getConfig();
             String player = e.getPlayer().getName();

@@ -19,7 +19,7 @@ public class BlockPlace implements Listener {
             return;
         }
 
-        if (WorldGuardManager.isFTB(e.getBlock().getLocation()) && e.getPlayer().hasPermission("genesisftb.admin")) {
+        if (WorldGuardManager.isFTB(e.getBlock().getLocation()) && e.getPlayer().hasPermission("genesisftb.admin") && GenesisFTB.getPlugin().gameMode) {
 
             FileConfiguration config = GenesisFTB.getPlugin().getConfig();
 
