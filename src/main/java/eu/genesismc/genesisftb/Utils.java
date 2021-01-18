@@ -1,5 +1,9 @@
 package eu.genesismc.genesisftb;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -121,6 +125,15 @@ public class Utils {
         if (prefix) { newMsg = color(GenesisFTB.getPlugin().config.getString("settings.prefix") + " " + msg); }
         else { newMsg = color(msg); }
         Bukkit.broadcast(newMsg, "genesisftb.admin");
+    }
+
+    public TextComponent clickToTeleport(Player p, String w, int x, int y, int z, String msg, int buttonNumber) {
+        TextComponent message = new TextComponent();
+        TextComponent startMsg = new TextComponent(msg);
+        startMsg.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ftb teleport "+w+" "+x+" "+y+" "+z));
+        startMsg.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.GREEN + "Teleport to button " + ChatColor.WHITE + buttonNumber + ChatColor.GREEN + " (auto GMSP)")));
+        message.addExtra(startMsg);
+        return message;
     }
 
     public String color(String s) {

@@ -183,10 +183,37 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             }
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.YELLOW + " There are " + ChatColor.WHITE + ChatColor.BOLD + GenesisFTB.getPlugin().buttons.size() + ChatColor.YELLOW + " buttons still to find:");
             for (int i = 0; i < GenesisFTB.getPlugin().buttons.size(); i++) {
+                Location listButton = GenesisFTB.getPlugin().buttons.get(i);
                 String buttonLocation = "x" + GenesisFTB.getPlugin().buttons.get(i).getX() + " y" + GenesisFTB.getPlugin().buttons.get(i).getY() + " z" + GenesisFTB.getPlugin().buttons.get(i).getZ();
                 int iN = i + 1;
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.WHITE + " Button " + iN + ": " + ChatColor.YELLOW + buttonLocation);
+                String locW = listButton.getWorld().getName();
+                int locX = (int) listButton.getX();
+                int locY = (int) listButton.getY();
+                int locZ = (int) listButton.getZ();
+                sender.spigot().sendMessage(
+                        GenesisFTB.utils().clickToTeleport(
+                                (Player) sender,
+                                locW,
+                                locX,
+                                locY,
+                                locZ,
+                                ChatColor.WHITE + "Button " + iN + ": " + ChatColor.YELLOW + buttonLocation,
+                                iN
+                        )
+                );
             }
+            return true;
+        }
+
+        /*************************
+         *  TELEPORT COMMAND
+         *************************/
+
+        if (args[0].equals("teleport") && hasMainPerm(sender)) {
+            World w = Bukkit.getServer().getWorld(args[1]);
+            Location newLoc = new Location(w,Integer.parseInt(args[2]),Integer.parseInt(args[3]),Integer.parseInt(args[4]));
+            ((Player) sender).setGameMode(GameMode.SPECTATOR);
+            ((Player) sender).teleport(newLoc);
             return true;
         }
 
