@@ -192,7 +192,6 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 int locZ = (int) listButton.getZ();
                 sender.spigot().sendMessage(
                         GenesisFTB.utils().clickToTeleport(
-                                (Player) sender,
                                 locW,
                                 locX,
                                 locY,

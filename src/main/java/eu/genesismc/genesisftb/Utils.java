@@ -127,7 +127,7 @@ public class Utils {
         Bukkit.broadcast(newMsg, "genesisftb.admin");
     }
 
-    public TextComponent clickToTeleport(Player p, String w, int x, int y, int z, String msg, int buttonNumber) {
+    public TextComponent clickToTeleport(String w, int x, int y, int z, String msg, int buttonNumber) {
         TextComponent message = new TextComponent();
         TextComponent startMsg = new TextComponent(msg);
         startMsg.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ftb teleport "+w+" "+x+" "+y+" "+z));
