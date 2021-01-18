@@ -81,7 +81,7 @@ public class Holograms extends PlaceholderExpansion implements Listener {
         try {
             Connection getWinsConnection = GenesisFTB.getDataSource().getConnection();
             PreparedStatement getStatement = getWinsConnection.prepareStatement(
-                    "SELECT name, wins FROM ftb_scores ORDER BY wins DESC LIMIT 5;"
+                    "SELECT name, wins FROM ftb_scores ORDER BY wins DESC LIMIT 10;"
             );
             getWinsConnection.commit();
             ResultSet wins = getStatement.executeQuery();
