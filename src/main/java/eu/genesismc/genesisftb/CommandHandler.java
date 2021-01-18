@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
 
@@ -196,7 +197,8 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
 
             sender.sendMessage(color(config.getString("settings.prefix")) + " " + ChatColor.YELLOW + preMessage + ChatColor.WHITE + ChatColor.BOLD + GenesisFTB.getPlugin().foundList.size() + ChatColor.YELLOW + " buttons " + postMessage + " found:");
             for (int i = 0; i < GenesisFTB.getPlugin().foundList.size(); i++) {
-                sender.sendMessage(color(config.getString("settings.prefix")) + " " + color(GenesisFTB.getPlugin().foundList.get(i)));
+                List<String> sortedList = GenesisFTB.getPlugin().foundList.stream().sorted().collect(Collectors.toList());
+                sender.sendMessage(color(config.getString("settings.prefix")) + " " + color(sortedList.get(i)));
             }
             return true;
         }
