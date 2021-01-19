@@ -184,22 +184,13 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.YELLOW + " There are " + ChatColor.WHITE + ChatColor.BOLD + GenesisFTB.getPlugin().buttons.size() + ChatColor.YELLOW + " buttons still to find:");
             for (int i = 0; i < GenesisFTB.getPlugin().buttons.size(); i++) {
                 Location listButton = GenesisFTB.getPlugin().buttons.get(i);
-                String buttonLocation = "x" + GenesisFTB.getPlugin().buttons.get(i).getX() + " y" + GenesisFTB.getPlugin().buttons.get(i).getY() + " z" + GenesisFTB.getPlugin().buttons.get(i).getZ();
+                String buttonLocation = "x" + listButton.getX() + " y" + listButton.getY() + " z" + listButton.getZ() + " (" + listButton.getWorld().getName() + ")";
                 int iN = i + 1;
                 String locW = listButton.getWorld().getName();
                 int locX = (int) listButton.getX();
                 int locY = (int) listButton.getY();
                 int locZ = (int) listButton.getZ();
-                sender.spigot().sendMessage(
-                        GenesisFTB.utils().clickToTeleport(
-                                locW,
-                                locX,
-                                locY,
-                                locZ,
-                                ChatColor.WHITE + "Button " + iN + ": " + ChatColor.YELLOW + buttonLocation,
-                                iN
-                        )
-                );
+                sender.spigot().sendMessage(GenesisFTB.utils().clickToTeleport(locW, locX, locY, locZ, ChatColor.WHITE + "Button " + iN + ": " + ChatColor.YELLOW + buttonLocation, iN));
             }
             return true;
         }
