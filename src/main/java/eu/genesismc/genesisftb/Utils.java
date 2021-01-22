@@ -33,7 +33,6 @@ public class Utils {
                 Location loc = (Location) openList;
                 Block b = loc.getBlock();
                 Openable d = (Openable) b.getBlockData();
-                Bukkit.getLogger().info("Setting " + b.getType() + " at " + loc + " to " + state);
                 d.setOpen(state);
                 b.setBlockData(d);
             }
