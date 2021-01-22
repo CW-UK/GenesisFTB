@@ -18,6 +18,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import java.util.Map;
+
 public class PlayerInteract implements Listener, Cancellable {
 
     @EventHandler
@@ -109,6 +111,11 @@ public class PlayerInteract implements Listener, Cancellable {
                 // Log the found button to /ftb found
                 Location loc = e.getClickedBlock().getLocation();
                 GenesisFTB.getPlugin().foundList.add("&f" + player + " &efound a button at &fx" + loc.getX() + " y" + loc.getY() + " z" + loc.getZ());
+
+                // Update total found by player (used for /ftb count)
+                Map<String, Integer> list = GenesisFTB.getPlugin().foundCount;
+                int count = list.getOrDefault(player, 0);
+                GenesisFTB.getPlugin().foundCount.put(player, count + 1);
 
                 // Send new score to player
                 p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(

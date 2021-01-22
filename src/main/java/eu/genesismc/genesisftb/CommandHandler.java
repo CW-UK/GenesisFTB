@@ -45,6 +45,42 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
         }
 
         /*************************
+         *  COUNT COMMAND
+         *************************/
+
+        if (args[0].equals("count") && hasMainPerm(sender) && sender.isOp()) {
+
+            if (GenesisFTB.getPlugin().foundCount.size() < 1) {
+                sender.sendMessage(color(config.getString("settings.prefix")) + " " + ChatColor.YELLOW + "No buttons have been found yet.");
+                return true;
+            }
+
+            sender.sendMessage(color(config.getString("settings.prefix")) + " " +
+                    ChatColor.YELLOW + "Most buttons found by players:"
+            );
+
+            // Send current Map to a string list to sort
+            Map<String, Integer> foundCountList = GenesisFTB.getPlugin().foundCount;
+            ArrayList<String> sortedFoundCountList = new ArrayList<String>();
+            for (Map.Entry entry : foundCountList.entrySet()) {
+                sortedFoundCountList.add(entry.getValue() + " " + entry.getKey());
+            }
+
+            // Process the sorted list and output in a friendly way
+            Collections.sort(sortedFoundCountList, Comparator.reverseOrder());
+            for (int i = 0; i < sortedFoundCountList.size(); i++) {
+                String[] entry = sortedFoundCountList.get(i).split(" ");
+                String cast = Bukkit.getPlayer(entry[1]).getDisplayName().toString();
+                sender.sendMessage(
+                        color(config.getString("settings.prefix")) + " " +
+                                ChatColor.WHITE + cast + ChatColor.YELLOW + " found " + ChatColor.WHITE + entry[0]
+                );
+            }
+
+            return true;
+        }
+
+        /*************************
          *  RELOAD COMMAND
          *************************/
 
@@ -135,6 +171,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             }
             GenesisFTB.getPlugin().inGame = true;
             GenesisFTB.getPlugin().foundList.clear();
+            GenesisFTB.getPlugin().foundCount.clear();
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 pl.sendMessage("" +
                         color(config.getString("settings.prefix")) + " " +
@@ -160,6 +197,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             GenesisFTB.getPlugin().buttons.clear();
             GenesisFTB.getPlugin().inGame = false;
             GenesisFTB.getPlugin().foundList.clear();
+            GenesisFTB.getPlugin().foundCount.clear();
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 pl.sendMessage("" +
                         color(config.getString("settings.prefix")) + " " +
@@ -241,8 +279,8 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             }
 
             sender.sendMessage(color(config.getString("settings.prefix")) + " " + ChatColor.YELLOW + preMessage + ChatColor.WHITE + ChatColor.BOLD + GenesisFTB.getPlugin().foundList.size() + ChatColor.YELLOW + " buttons " + postMessage + " found:");
+            List<String> sortedList = GenesisFTB.getPlugin().foundList.stream().sorted().collect(Collectors.toList());
             for (int i = 0; i < GenesisFTB.getPlugin().foundList.size(); i++) {
-                List<String> sortedList = GenesisFTB.getPlugin().foundList.stream().sorted().collect(Collectors.toList());
                 sender.sendMessage(color(config.getString("settings.prefix")) + " " + color(sortedList.get(i)));
             }
             return true;
@@ -343,7 +381,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 if (args.length == 1) {
                     final List<String> commands = Arrays.asList(
                             "found", "cleardatabase", "list", "reload", "reset", "opendoors",
-                            "closedoors", "start", "broadcast", "setscore", "toggle"
+                            "closedoors", "start", "broadcast", "setscore", "toggle", "count"
                     );
                     return StringUtil.copyPartialMatches(args[0], commands, new ArrayList<>());
                 }

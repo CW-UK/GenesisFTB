@@ -80,8 +80,9 @@ public class Holograms extends PlaceholderExpansion implements Listener {
 
         try {
             Connection getWinsConnection = GenesisFTB.getDataSource().getConnection();
+            int maxConnections = GenesisFTB.getPlugin().getConfig().getInt("settings.max-top-places");
             PreparedStatement getStatement = getWinsConnection.prepareStatement(
-                    "SELECT name, wins FROM ftb_scores ORDER BY wins DESC LIMIT 10;"
+                    "SELECT name, wins FROM ftb_scores ORDER BY wins DESC LIMIT " + maxConnections + ";"
             );
             getWinsConnection.commit();
             ResultSet wins = getStatement.executeQuery();

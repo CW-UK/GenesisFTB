@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Openable;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,6 +17,8 @@ import eu.genesismc.genesisftb.ItemTools;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.Map;
+import java.util.HashMap;
 
 public final class GenesisFTB extends JavaPlugin implements Listener {
 
@@ -24,6 +27,14 @@ public final class GenesisFTB extends JavaPlugin implements Listener {
     private Utils utils;
     public String resetCode = "";
     public boolean gameMode = true;
+    private final NamespacedKey toolKey = new NamespacedKey(this, "ftb-tool");
+    public ArrayList<Location> buttons = new ArrayList<Location>();
+    public ArrayList<String> foundList = new ArrayList<String>();
+    public Map<String, Integer> foundCount = new HashMap<String, Integer>();
+    public Boolean inGame = false;
+    public Boolean mainDoorsOpen = false;
+    public Boolean gameDoorsOpen = false;
+    public FileConfiguration config = this.getConfig();
 
     private static ItemTools itemTools;
     public static ItemTools getItemTools() {
@@ -45,14 +56,6 @@ public final class GenesisFTB extends JavaPlugin implements Listener {
     public NamespacedKey getToolKey() {
         return toolKey;
     }
-
-    private final NamespacedKey toolKey = new NamespacedKey(this, "ftb-tool");
-    public ArrayList<Location> buttons = new ArrayList<Location>();
-    public ArrayList<String> foundList = new ArrayList<String>();
-    public Boolean inGame = false;
-    public Boolean mainDoorsOpen = false;
-    public Boolean gameDoorsOpen = false;
-    public FileConfiguration config = this.getConfig();
 
     @Override
     public void onLoad() {
@@ -102,6 +105,7 @@ public final class GenesisFTB extends JavaPlugin implements Listener {
         config.addDefault("settings.announce-reset", true);
         config.addDefault("settings.prefix", "[FTB]");
         config.addDefault("settings.na-placeholder", "N/A");
+        config.addDefault("settings.max-top-places", 10);
         config.addDefault("settings.found-message", "%player% has found the button!");
         config.addDefault("settings.placed-message", "%player% has placed a button!");
         config.addDefault("settings.removed-message", "%player% has removed a button!");
