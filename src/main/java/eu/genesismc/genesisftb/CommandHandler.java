@@ -48,7 +48,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  COUNT COMMAND
          *************************/
 
-        if (args[0].equals("count") && hasMainPerm(sender) && sender.isOp()) {
+        if (args[0].equals("count") && hasMainPerm(sender)) {
 
             if (GenesisFTB.getPlugin().foundCount.size() < 1) {
                 sender.sendMessage(color(config.getString("settings.prefix")) + " " + ChatColor.YELLOW + "No buttons have been found yet.");
@@ -84,7 +84,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  RELOAD COMMAND
          *************************/
 
-        if (args[0].equals("reload") && hasMainPerm(sender)) {
+        if (args[0].equals("reload") && hasMainPerm(sender) && sender.isOp()) {
             GenesisFTB.getPlugin().reloadConfig();
             GenesisFTB.getPlugin().config = GenesisFTB.getPlugin().getConfig();
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " Configuration reloaded.");
@@ -95,7 +95,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *  TOGGLE COMMAND
          *************************/
 
-        if (args[0].equals("toggle") && hasMainPerm(sender)) {
+        if (args[0].equals("toggle") && hasMainPerm(sender) && sender.isOp()) {
             GenesisFTB.getPlugin().config = GenesisFTB.getPlugin().getConfig();
 
             if (GenesisFTB.getPlugin().inGame) {
