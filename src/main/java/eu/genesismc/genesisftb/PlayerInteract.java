@@ -96,7 +96,7 @@ public class PlayerInteract implements Listener, Cancellable {
                 }
 
                 // Announce that the button has been found?
-                GenesisFTB.utils().sendToAll(config.getString("settings.found-message").replace("%player%", player).replace("%count%", String.valueOf(totalButtons)), true);
+                GenesisFTB.utils().sendToAll(config.getString("settings.found-message").replace("%player%", player).replace("%count%", String.valueOf(totalButtons)).replace("%player_display%", p.getDisplayName()), true);
                 if (GenesisFTB.getPlugin().mainDoorsOpen) {
                     GenesisFTB.utils().sendToAll(config.getString("settings.doors-closed-message"), true);
                 }
