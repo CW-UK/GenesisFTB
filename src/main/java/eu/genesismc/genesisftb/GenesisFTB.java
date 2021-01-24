@@ -115,8 +115,6 @@ public final class GenesisFTB extends JavaPlugin implements Listener {
         config.addDefault("settings.reward-message", "You have been awarded prizes!");
         config.addDefault("settings.doors-closed-message", "The arena doors have now been closed!");
         config.addDefault("rewards", Collections.emptyList());
-        config.addDefault("maindoors", Collections.emptyList());
-        config.addDefault("gamedoors", Collections.emptyList());
 
         /*******************************
          * SQL SUPPORT - NOT IMPLEMENTED

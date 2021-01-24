@@ -45,8 +45,8 @@ public class PlayerInteract implements Listener, Cancellable {
                     if (p.isOp()) {
                         if (p.isSneaking()) {
                             GenesisFTB.getItemTools().shiftMode(p);
-                            e.setUseInteractedBlock(Event.Result.DENY);
                             e.setCancelled(true);
+                            e.setUseInteractedBlock(Event.Result.DENY);
                             return;
                         }
                         if (!(e.getClickedBlock().getBlockData() instanceof Openable)) {
@@ -54,8 +54,8 @@ public class PlayerInteract implements Listener, Cancellable {
                             return;
                         }
                         GenesisFTB.getItemTools().doAction(p, e.getClickedBlock());
-                        e.setUseInteractedBlock(Event.Result.DENY);
                         e.setCancelled(true);
+                        e.setUseInteractedBlock(Event.Result.DENY);
                         return;
                     }
                 }

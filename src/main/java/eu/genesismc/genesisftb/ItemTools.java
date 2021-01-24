@@ -94,7 +94,7 @@ public class ItemTools {
                     p.sendMessage(color(prefix) + ChatColor.RED + " That door is already linked.");
                     break;
                 }
-                GenesisFTB.utils().addDoor(p, loc, "gamedoors");
+                GenesisFTB.utils().addDoor(p, loc, "game");
                 break;
 
             case ADD_MAIN_DOOR:
@@ -102,7 +102,7 @@ public class ItemTools {
                     p.sendMessage(color(prefix) + ChatColor.RED + " That door is already linked.");
                     break;
                 }
-                GenesisFTB.utils().addDoor(p, loc, "maindoors");
+                GenesisFTB.utils().addDoor(p, loc, "main");
                 break;
 
             case REMOVE_DOOR:
@@ -110,7 +110,7 @@ public class ItemTools {
                     GenesisFTB.utils().removeDoor(p, loc);
                     break;
                 }
-                p.sendMessage(color(prefix) + ChatColor.RED + " That door is already linked.");
+                p.sendMessage(color(prefix) + ChatColor.RED + " That door is not linked.");
                 break;
         }
     }

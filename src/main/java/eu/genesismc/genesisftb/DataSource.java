@@ -36,7 +36,8 @@ public class DataSource {
             Connection connection = hikari.getConnection();
             Statement statement = connection.createStatement();
             statement.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS ftb_scores(UUID VARCHAR(36), name VARCHAR(16), wins INT, PRIMARY KEY (UUID));"
+                    "CREATE TABLE IF NOT EXISTS ftb_scores(UUID VARCHAR(36), name VARCHAR(16), wins INT, PRIMARY KEY (UUID));" +
+                    "CREATE TABLE IF NOT EXISTS ftb_doors(world VARCHAR(32), x INT, y INT, z INT, type VARCHAR(4));"
             );
             statement.close();
             connection.close();
