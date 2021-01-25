@@ -121,7 +121,7 @@ public class Utils {
             statement.setInt(3, (int) loc.getY());
             statement.setInt(4, (int) loc.getZ());
             statement.setString(5, doorType);
-            statement.executeUpdate();
+            statement.executeQuery();
             addDoor.commit();
             statement.close();
             addDoor.close();
@@ -181,11 +181,20 @@ public class Utils {
         Bukkit.broadcast(newMsg, "genesisftb.admin");
     }
 
-    public TextComponent clickToTeleport(String w, int x, int y, int z, String msg, int buttonNumber) {
+    public TextComponent clickToTeleportButton(String w, int x, int y, int z, String msg, int buttonNumber) {
         TextComponent message = new TextComponent();
         TextComponent startMsg = new TextComponent(msg);
         startMsg.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ftb teleport "+w+" "+x+" "+y+" "+z));
         startMsg.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.GREEN + "Teleport to button " + ChatColor.WHITE + buttonNumber + ChatColor.GREEN + " (auto GMSP)")));
+        message.addExtra(startMsg);
+        return message;
+    }
+
+    public TextComponent clickToTeleportDoor(String w, int x, int y, int z, String msg) {
+        TextComponent message = new TextComponent();
+        TextComponent startMsg = new TextComponent(msg);
+        startMsg.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ftb teleport "+w+" "+x+" "+y+" "+z));
+        startMsg.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.GREEN + "Teleport to this door (auto GMSP)")));
         message.addExtra(startMsg);
         return message;
     }

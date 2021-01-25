@@ -12,6 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.util.StringUtil;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -228,9 +232,49 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 int locX = (int) listButton.getX();
                 int locY = (int) listButton.getY();
                 int locZ = (int) listButton.getZ();
-                sender.spigot().sendMessage(GenesisFTB.utils().clickToTeleport(locW, locX, locY, locZ, ChatColor.WHITE + "Button " + iN + ": " + ChatColor.YELLOW + buttonLocation, iN));
+                sender.spigot().sendMessage(GenesisFTB.utils().clickToTeleportButton(locW, locX, locY, locZ, ChatColor.WHITE + "Button " + iN + ": " + ChatColor.YELLOW + buttonLocation, iN));
             }
             return true;
+        }
+
+        /*************************
+         *  LISTDOORS COMMAND
+         *************************/
+
+        if (args[0].equals("listdoors") && hasMainPerm(sender)) {
+            try {
+                Connection listDoor = GenesisFTB.getDataSource().getConnection();
+                PreparedStatement statement = listDoor.prepareStatement(
+                        "SELECT * FROM ftb_doors ORDER BY world DESC, type DESC;"
+                );
+                listDoor.commit();
+                ResultSet doors = statement.executeQuery();
+                String lastWorld = "noworld";
+
+                while (doors.next()) {
+                    String worldName = doors.getString("world");
+                    World world = Bukkit.getWorld(worldName);
+                    if (!lastWorld.equals(worldName)) {
+                        sender.sendMessage("" + ChatColor.YELLOW + ChatColor.BOLD + worldName + ":");
+                    }
+                    lastWorld = worldName;
+                    int x = doors.getInt("x");
+                    int y = doors.getInt("y");
+                    int z = doors.getInt("z");
+                    Location loc = new Location(world,x,y,z);
+                    String type = doors.getString("type");
+                    String output = "  " + ChatColor.WHITE + type.toUpperCase() + " door: " + ChatColor.YELLOW + "x" + x + " y" + y + " z" + z + " (" + ChatColor.WHITE + loc.getBlock().getType().toString() + ChatColor.YELLOW + ")";
+                    sender.spigot().sendMessage(GenesisFTB.utils().clickToTeleportDoor(world.getName(), x, y, z, output));
+                }
+
+                listDoor.close();
+                statement.close();
+                doors.close();
+                return true;
+            }
+            catch (SQLException | NullPointerException e) {
+                return false;
+            }
         }
 
         /*************************
@@ -381,7 +425,8 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 if (args.length == 1) {
                     final List<String> commands = Arrays.asList(
                             "found", "cleardatabase", "list", "reload", "reset", "opendoors",
-                            "closedoors", "start", "broadcast", "setscore", "toggle", "count"
+                            "closedoors", "start", "broadcast", "setscore", "toggle", "count",
+                            "listdoors"
                     );
                     return StringUtil.copyPartialMatches(args[0], commands, new ArrayList<>());
                 }
