@@ -16,6 +16,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Utils {
@@ -121,7 +123,7 @@ public class Utils {
             statement.setInt(3, (int) loc.getY());
             statement.setInt(4, (int) loc.getZ());
             statement.setString(5, doorType);
-            statement.executeQuery();
+            statement.executeUpdate();
             addDoor.commit();
             statement.close();
             addDoor.close();
@@ -197,6 +199,14 @@ public class Utils {
         startMsg.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.GREEN + "Teleport to this door (auto GMSP)")));
         message.addExtra(startMsg);
         return message;
+    }
+
+    public List<String> getPlayerList() {
+        List<String> output = new ArrayList<String>();
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+            output.add(p.getName());
+        }
+        return output;
     }
 
     public String color(String s) {

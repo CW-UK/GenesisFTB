@@ -26,7 +26,7 @@ public class DataSource {
     public void startSQL() {
         hikari.setLeakDetectionThreshold(2000);
         hikari.setConnectionTimeout(1000);
-        hikari.setMaximumPoolSize(20);
+        hikari.setMaximumPoolSize(10);
         hikari.setMinimumIdle(5);
         hikari.setConnectionTestQuery("SELECT 1;");
         hikari.addDataSourceProperty("autoReconnect", true);

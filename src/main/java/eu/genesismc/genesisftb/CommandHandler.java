@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.util.StringUtil;
@@ -426,14 +427,30 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                     final List<String> commands = Arrays.asList(
                             "found", "cleardatabase", "list", "reload", "reset", "opendoors",
                             "closedoors", "start", "broadcast", "setscore", "toggle", "count",
-                            "listdoors"
+                            "listdoors", "tool"
                     );
                     return StringUtil.copyPartialMatches(args[0], commands, new ArrayList<>());
                 }
-                // Second param - 1
+                // closedoors <main|game>
                 if (args.length == 2 && (args[0].equals("closedoors") || args[0].equals("opendoors"))) {
                     final List<String> commands = Arrays.asList("main", "game");
                     return StringUtil.copyPartialMatches(args[1], commands, new ArrayList<>());
+                }
+                // broadcast <message>
+                else if (args.length == 2 && args[0].equals("broadcast")) {
+                    final List<String> commands = Arrays.asList("<message>");
+                    return commands;
+                }
+                // setscore <player> <score>
+                else if (args[0].equals("setscore")) {
+                    if (args.length == 2) {
+                        return StringUtil.copyPartialMatches(args[1], GenesisFTB.utils().getPlayerList(), new ArrayList<>());
+                    }
+                    if (args.length == 3) {
+                        final List<String> commands = Arrays.asList("<new score>");
+                        return commands;
+                    }
+                    else { return null; }
                 }
                 else { return null; }
             }
