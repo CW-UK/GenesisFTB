@@ -397,7 +397,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 name = Bukkit.getPlayer(args[0]).getName();
             }
             catch (NullPointerException e) {
-                sender.sendMessage(ChatColor.GOLD + "Player " + ChatColor.WHITE + args[0] + ChatColor.GOLD + " could not be found.");
+                sender.sendMessage(ChatColor.GOLD + "Player " + ChatColor.WHITE + args[0] + ChatColor.GOLD + " has never played or is not online.");
                 return true;
             }
             Integer wins = GenesisFTB.getDataSource().getWins(uuid);
