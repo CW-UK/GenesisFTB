@@ -319,7 +319,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             String postMessage = GenesisFTB.getPlugin().inGame ? "have been" : "were";
 
             if (GenesisFTB.getPlugin().foundList.size() < 1) {
-                sender.sendMessage(color(config.getString("settings.prefix")) + " " + ChatColor.YELLOW + " No buttons have been found yet.");
+                sender.sendMessage(color(config.getString("settings.prefix")) + " " + ChatColor.YELLOW + "No buttons have been found yet.");
                 return true;
             }
 
