@@ -75,7 +75,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
             Collections.sort(sortedFoundCountList, Comparator.reverseOrder());
             for (int i = 0; i < sortedFoundCountList.size(); i++) {
                 String[] entry = sortedFoundCountList.get(i).split(" ");
-                String cast = Bukkit.getPlayer(entry[1]).getDisplayName().toString();
+                String cast = Bukkit.getServer().getPlayer(entry[1]) == null ? entry[1] : Bukkit.getPlayer(entry[1]).getDisplayName();
                 sender.sendMessage(
                         color(config.getString("settings.prefix")) + " " +
                                 ChatColor.WHITE + cast + ChatColor.YELLOW + " found " + ChatColor.WHITE + entry[0]

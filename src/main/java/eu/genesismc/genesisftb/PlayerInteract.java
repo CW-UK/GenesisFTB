@@ -67,6 +67,9 @@ public class PlayerInteract implements Listener, Cancellable {
                     return;
                 }
 
+                /***************************
+                 *  GAME NOT STARTED
+                 **************************/
                 if (!GenesisFTB.getPlugin().inGame) {
                      if (p.hasPermission("genesisftb.admin") && GenesisFTB.getPlugin().buttons.contains(e.getClickedBlock().getLocation())) {
                          p.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " You can't press game buttons before the game has started.");
@@ -76,6 +79,9 @@ public class PlayerInteract implements Listener, Cancellable {
                      return;
                 }
 
+                /***************************
+                 *  NON-GAME BUTTON PRESSED
+                 **************************/
                 if (!GenesisFTB.getPlugin().buttons.contains(e.getClickedBlock().getLocation())) {
                     p.sendMessage(
                             ChatColor.GOLD + "That button is decorative and " + ChatColor.WHITE + "not" + ChatColor.GOLD + " part of the game!"
