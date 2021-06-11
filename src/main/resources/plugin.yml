@@ -1,6 +1,6 @@
 name: GenesisFTB
 main: eu.genesismc.genesisftb.GenesisFTB
-version: 1.0
+version: 2.0
 author: CW_UK
 api-version: 1.15
 depend: [WorldGuard]

@@ -22,6 +22,12 @@ import java.util.Random;
 
 public class Utils {
 
+
+
+    /**
+     * Generates a new code that must be specified in
+     * order to reset the database.
+     */
     public void newResetCode() {
         Random r = new Random();
         String alphabet = "0123456789";
@@ -32,6 +38,15 @@ public class Utils {
         GenesisFTB.getPlugin().resetCode = preparedCode;
     }
 
+    /**
+     * Instructs the plugin to set the state of doors.
+     *
+     * @param doorTypes  The type of door to control. Can be either
+     *                   'game' or 'main'
+     * @param state      Whether the door should be open or not.
+     *                   Use <code>true</code> to open.
+     *                   Use <code>false</code> to close.
+     */
     public void openDoors(String doorTypes, Boolean state) {
         try {
             Connection openDoor = GenesisFTB.getDataSource().getConnection();
@@ -63,6 +78,13 @@ public class Utils {
         }
     }
 
+    /**
+     * Checks whether the block at the specified location is
+     * a door known to the plugin.
+     *
+     * @param loc  Location of the block. Must be a valid {@link org.bukkit.Location} object.
+     * @return <code>true</code> or <code>false</code>
+     */
     public boolean isDoor(Location loc) {
         try {
             Connection isDoor = GenesisFTB.getDataSource().getConnection();
@@ -111,6 +133,15 @@ public class Utils {
         }
     }
 
+    /**
+     * Adds the block at the specified location to the
+     * database of known doors.
+     *
+     * @param p         {@link org.bukkit.entity.Player} object to notify
+     * @param loc       Location of the block. Must be a valid {@link org.bukkit.Location} object
+     * @param doorType  Type of door, can be 'main' or 'game'
+     * @return <code>true</code> or <code>false</code>
+     */
     public boolean addDoor(Player p, Location loc, String doorType) {
         Block block = loc.getBlock();
         try {
@@ -140,6 +171,14 @@ public class Utils {
         return true;
     }
 
+    /**
+     * Removes the block at the specified location from the
+     * database of known doors.
+     *
+     * @param p         {@link org.bukkit.entity.Player} object to notify
+     * @param loc       Location of the block. Must be a valid {@link org.bukkit.Location} object
+     * @return <code>true</code> or <code>false</code>
+     */
     public boolean removeDoor(Player p, Location loc) {
         Block block = loc.getBlock();
         try {
