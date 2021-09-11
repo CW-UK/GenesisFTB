@@ -72,13 +72,13 @@ public class ItemTools {
         p.getInventory().setItemInMainHand(itemStack);
         switch (getMode(p)) {
             case ADD_GAME_DOOR:
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GOLD + "Stick will now add a GAME door"));
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "[+] Add a GAME door"));
                 break;
             case ADD_MAIN_DOOR:
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GOLD + "Stick will now add a MAIN door"));
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[+] Add a MAIN door"));
                 break;
             case REMOVE_DOOR:
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GOLD + "Stick will now REMOVE a door"));
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.DARK_RED + "" + ChatColor.BOLD + "[-] Remove a door"));
                 break;
         }
     }
