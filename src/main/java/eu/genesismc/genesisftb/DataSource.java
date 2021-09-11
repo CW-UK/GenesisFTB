@@ -24,7 +24,7 @@ public class DataSource {
     }
 
     public void startSQL() {
-        hikari.setLeakDetectionThreshold(2000);
+        hikari.setLeakDetectionThreshold(3000);
         hikari.setConnectionTimeout(1000);
         hikari.setMaximumPoolSize(10);
         hikari.setMinimumIdle(5);
@@ -39,7 +39,7 @@ public class DataSource {
             Statement statement = connection.createStatement();
             statement.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS ftb_scores(UUID VARCHAR(36), name VARCHAR(16), wins INT, PRIMARY KEY (UUID));" +
-                    "CREATE TABLE IF NOT EXISTS ftb_doors(world VARCHAR(32), x INT, y INT, z INT, type VARCHAR(4));"
+                    "CREATE TABLE IF NOT EXISTS ftb_doors(world VARCHAR(32), x INT, y INT, z INT, type VARCHAR(4), doorstate VARCHAR(6));"
             );
             statement.close();
             connection.close();

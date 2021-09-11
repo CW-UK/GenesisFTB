@@ -9,7 +9,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -74,7 +77,41 @@ public class Utils {
             openDoor.close();
         }
         catch (NullPointerException | SQLException exc) {
-            Bukkit.getServer().getLogger().info("GenesisFTB: No doors!");
+            Bukkit.getServer().getLogger().info("GenesisFTB: No main doors!");
+        }
+    }
+
+    /**
+     * Instructs the plugin to reset game doors.
+     *
+     */
+    public void resetGameDoors() {
+        try {
+            Connection gameDoors = GenesisFTB.getDataSource().getConnection();
+            PreparedStatement statement = gameDoors.prepareStatement(
+                    "SELECT * FROM ftb_doors WHERE type=?;"
+            );
+            statement.setString(1, "game");
+            gameDoors.commit();
+            ResultSet doors = statement.executeQuery();
+            while (doors.next()) {
+                World world = Bukkit.getWorld(doors.getString("world"));
+                int x = doors.getInt("x");
+                int y = doors.getInt("y");
+                int z = doors.getInt("z");
+                Location loc = new Location(world,x,y,z);
+                String doorState = doors.getString("doorstate");
+                Block b = loc.getBlock();
+                Openable d = (Openable) b.getBlockData();
+                d.setOpen(doorState.equals("open"));
+                b.setBlockData(d);
+            }
+            statement.close();
+            doors.close();
+            gameDoors.close();
+        }
+        catch (NullPointerException | SQLException exc) {
+            Bukkit.getServer().getLogger().info("GenesisFTB: No game doors!");
         }
     }
 
@@ -144,16 +181,18 @@ public class Utils {
      */
     public boolean addDoor(Player p, Location loc, String doorType) {
         Block block = loc.getBlock();
+        String doorState = ((Openable)block.getState().getBlockData()).isOpen() ? "open" : "closed";
         try {
             Connection addDoor = GenesisFTB.getDataSource().getConnection();
             PreparedStatement statement = addDoor.prepareStatement(
-                    "INSERT INTO ftb_doors (world, x, y, z, type) VALUES (?,?,?,?,?);"
+                    "INSERT INTO ftb_doors (world, x, y, z, type, doorstate) VALUES (?,?,?,?,?,?);"
             );
             statement.setString(1, loc.getWorld().getName());
             statement.setInt(2, (int) loc.getX());
             statement.setInt(3, (int) loc.getY());
             statement.setInt(4, (int) loc.getZ());
             statement.setString(5, doorType);
+            statement.setString(6, doorState);
             statement.executeUpdate();
             addDoor.commit();
             statement.close();
@@ -161,13 +200,22 @@ public class Utils {
         }
         catch (NullPointerException | SQLException npe) {
             p.sendMessage(ChatColor.RED + "A fatal error occurred while trying add this door.");
+            p.sendMessage(ChatColor.RED + "Door was in state " + doorState);
+            p.sendMessage(ChatColor.RED + "At " + (int)loc.getX() + " " + (int)loc.getY() + " " + (int)loc.getZ() + ", it is a type of " + doorType);
             return false;
         }
 
         String doorBlock = block.getType().toString();
-        p.sendMessage(
-                color(GenesisFTB.getPlugin().config.getString("settings.prefix")) +
-                        ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is now a " + doorType.toUpperCase() + " door.");
+        if (doorType.equalsIgnoreCase("MAIN")) {
+            p.sendMessage(
+                    color(GenesisFTB.getPlugin().config.getString("settings.prefix")) +
+                            ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is now a " + doorType.toUpperCase() + " door.");
+        }
+        else {
+            p.sendMessage(
+                    color(GenesisFTB.getPlugin().config.getString("settings.prefix")) +
+                            ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is now a " + doorType.toUpperCase() + " door and will reset to a " + ChatColor.WHITE + doorState.toUpperCase() + ChatColor.GREEN + " position.");
+        }
         return true;
     }
 

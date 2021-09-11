@@ -10,7 +10,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Openable;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +19,7 @@ import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.Map;
 
-public class PlayerInteract implements Listener, Cancellable {
+public class PlayerInteract implements Listener {
 
     @EventHandler
     public void on(PlayerInteractEvent e) {
@@ -140,7 +139,9 @@ public class PlayerInteract implements Listener, Cancellable {
                     GenesisFTB.getPlugin().inGame = false;
                     GenesisFTB.utils().sendToAll(config.getString("settings.end-message").replace("%player%", player).replace("%count%", String.valueOf(totalButtons)), true);
                     GenesisFTB.utils().openDoors("main", config.getBoolean("settings.set-maindoors-on-end"));
-                    GenesisFTB.utils().openDoors("game", config.getBoolean("settings.set-gamedoors-on-end"));
+                    if (config.getBoolean("settings.reset-gamedoors-on-end")) {
+                        GenesisFTB.utils().resetGameDoors();
+                    }
                 }
             }
 
@@ -165,8 +166,4 @@ public class PlayerInteract implements Listener, Cancellable {
 
     public String color(String s) { return ChatColor.translateAlternateColorCodes('&', s); }
 
-    @Override
-    public boolean isCancelled() { return false; }
-    @Override
-    public void setCancelled(boolean b) { }
 }

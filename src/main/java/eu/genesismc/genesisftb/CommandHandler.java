@@ -8,7 +8,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.util.StringUtil;
@@ -125,16 +124,8 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *************************/
 
         if (args[0].equals("opendoors") && hasMainPerm(sender)) {
-            if (args.length < 2) {
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Specify door type: /ftb opendoors <main|game>");
-                return true;
-            }
-            if (args[1].equals("main") || args[1].equals("game")) {
-                GenesisFTB.utils().openDoors(args[1], true);
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Opening " + args[1] + " doors..");
-                return true;
-            }
-            sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Specify door type: /ftb opendoors <main|game>");
+            GenesisFTB.utils().openDoors("main", true);
+            sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Opening main doors..");
             return true;
         }
 
@@ -143,16 +134,18 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
          *************************/
 
         if (args[0].equals("closedoors") && hasMainPerm(sender)) {
-            if (args.length < 2) {
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Specify door type: /ftb closedoors <main|game>");
-                return true;
-            }
-            if (args[1].equals("main") || args[1].equals("game")) {
-                GenesisFTB.utils().openDoors(args[1], false);
-                sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Closing game doors..");
-                return true;
-            }
-            sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Specify door type: /ftb closedoors <main|game>");
+            GenesisFTB.utils().openDoors("main", false);
+            sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Closing main doors..");
+            return true;
+        }
+
+        /*************************
+         *  RESETDOORS COMMAND
+         *************************/
+
+        if (args[0].equals("resetdoors") && hasMainPerm(sender)) {
+            GenesisFTB.utils().resetGameDoors();
+            sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Resetting game doors..");
             return true;
         }
 
@@ -186,7 +179,9 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
 
             sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Setting all doors..");
             GenesisFTB.utils().openDoors("main", config.getBoolean("settings.set-maindoors-on-start"));
-            GenesisFTB.utils().openDoors("game", config.getBoolean("settings.set-gamedoors-on-start"));
+            if (config.getBoolean("settings.reset-gamedoors-on-start")) {
+                GenesisFTB.utils().resetGameDoors();
+            }
 
             return true;
         }
@@ -209,9 +204,11 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                         color(config.getString("settings.reset-message"))
                 );
             }
-            sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Setting all doors..");
+            sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.GREEN + " Resetting all doors..");
             GenesisFTB.utils().openDoors("main", config.getBoolean("settings.set-maindoors-on-reset"));
-            GenesisFTB.utils().openDoors("game", config.getBoolean("settings.set-gamedoors-on-reset"));
+            if (config.getBoolean("settings.reset-gamedoors-on-reset")) {
+                GenesisFTB.utils().resetGameDoors();
+            }
             return true;
         }
 
@@ -251,6 +248,7 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                 listDoor.commit();
                 ResultSet doors = statement.executeQuery();
                 String lastWorld = "noworld";
+                int count = 0;
 
                 while (doors.next()) {
                     String worldName = doors.getString("world");
@@ -266,11 +264,17 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                     String type = doors.getString("type");
                     String output = "  " + ChatColor.WHITE + type.toUpperCase() + " door: " + ChatColor.YELLOW + "x" + x + " y" + y + " z" + z + " (" + ChatColor.WHITE + loc.getBlock().getType().toString() + ChatColor.YELLOW + ")";
                     sender.spigot().sendMessage(GenesisFTB.utils().clickToTeleportDoor(world.getName(), x, y, z, output));
+                    count++;
                 }
 
                 listDoor.close();
                 statement.close();
                 doors.close();
+
+                if (count < 1) {
+                    sender.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " No doors have been added.");
+                }
+
                 return true;
             }
             catch (SQLException | NullPointerException e) {
@@ -427,14 +431,9 @@ public class CommandHandler implements CommandExecutor, Listener, TabCompleter {
                     final List<String> commands = Arrays.asList(
                             "found", "cleardatabase", "list", "reload", "reset", "opendoors",
                             "closedoors", "start", "broadcast", "setscore", "toggle", "count",
-                            "listdoors", "tool"
+                            "listdoors", "tool", "resetdoors"
                     );
                     return StringUtil.copyPartialMatches(args[0], commands, new ArrayList<>());
-                }
-                // closedoors <main|game>
-                if (args.length == 2 && (args[0].equals("closedoors") || args[0].equals("opendoors"))) {
-                    final List<String> commands = Arrays.asList("main", "game");
-                    return StringUtil.copyPartialMatches(args[1], commands, new ArrayList<>());
                 }
                 // broadcast <message>
                 else if (args.length == 2 && args[0].equals("broadcast")) {
