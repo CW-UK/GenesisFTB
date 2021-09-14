@@ -39,24 +39,22 @@ public class PlayerInteract implements Listener {
                  *  ADMIN TOOL CHECKS
                  **************************/
                 if (GenesisFTB.getItemTools().isStackingTool(p.getInventory().getItemInMainHand())) {
-                    if (!p.hasPermission("genesisftb.admin")) { return; }
+                    if (!p.isOp()) { return; }
                     if (e.getHand() == EquipmentSlot.OFF_HAND) { return; }
-                    if (p.isOp()) {
-                        if (p.isSneaking()) {
-                            GenesisFTB.getItemTools().shiftMode(p);
-                            e.setCancelled(true);
-                            e.setUseInteractedBlock(Event.Result.DENY);
-                            return;
-                        }
-                        if (!(e.getClickedBlock().getBlockData() instanceof Openable)) {
-                            p.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
-                            return;
-                        }
-                        GenesisFTB.getItemTools().doAction(p, e.getClickedBlock());
+                    if (p.isSneaking()) {
+                        GenesisFTB.getItemTools().shiftMode(p);
                         e.setCancelled(true);
                         e.setUseInteractedBlock(Event.Result.DENY);
                         return;
                     }
+                    if (!(e.getClickedBlock().getBlockData() instanceof Openable)) {
+                        p.sendMessage(color(config.getString("settings.prefix")) + ChatColor.RED + " That block is not openable.");
+                        return;
+                    }
+                    GenesisFTB.getItemTools().doAction(p, e.getClickedBlock());
+                    e.setCancelled(true);
+                    e.setUseInteractedBlock(Event.Result.DENY);
+                    return;
                 }
 
                 /***************************

@@ -78,7 +78,10 @@ public class ItemTools {
                 p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "[+] Add a MAIN door"));
                 break;
             case REMOVE_DOOR:
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.DARK_RED + "" + ChatColor.BOLD + "[-] Remove a door"));
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.DARK_RED + "" + ChatColor.BOLD + "[-] Remove Door"));
+                break;
+            case DOOR_INFO:
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.YELLOW + "" + ChatColor.BOLD + "[?] Check Door"));
                 break;
         }
     }
@@ -112,13 +115,22 @@ public class ItemTools {
                 }
                 p.sendMessage(color(prefix) + ChatColor.RED + " That door is not linked.");
                 break;
+
+            case DOOR_INFO:
+                if (GenesisFTB.utils().isDoor(loc)) {
+                    GenesisFTB.utils().doorInfo(p, loc);
+                    break;
+                }
+                p.sendMessage(color(prefix) + ChatColor.RED + " That door is not linked.");
+                break;
         }
     }
 
     enum ToolMode {
         ADD_GAME_DOOR(1),
         ADD_MAIN_DOOR(2),
-        REMOVE_DOOR(3);
+        REMOVE_DOOR(3),
+        DOOR_INFO(4);
 
         private final int id;
         ToolMode(int id) {

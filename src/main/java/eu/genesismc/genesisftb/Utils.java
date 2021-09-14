@@ -13,6 +13,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Door;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -144,8 +145,15 @@ public class Utils {
         }
     }
 
-    public String whichDoor(Location loc) {
-        String doorType = null;
+    /**
+     * Returns information about a door, such as location,
+     * type, and reset state (open/closed)
+     *
+     * @param p    {@link org.bukkit.entity.Player} object to send feedback message.
+     * @param loc  Location of the block. Must be a valid {@link org.bukkit.Location} object.
+     */
+    public void doorInfo(Player p, Location loc) {
+        FileConfiguration config = GenesisFTB.getPlugin().getConfig();
         try {
             Connection whichDoor = GenesisFTB.getDataSource().getConnection();
             PreparedStatement statement = whichDoor.prepareStatement(
@@ -159,14 +167,19 @@ public class Utils {
             whichDoor.commit();
             ResultSet doors = statement.executeQuery();
             if (doors.next()) {
-                doorType = doors.getString("type");
+                World world = Bukkit.getWorld(doors.getString("world"));
+                int x = doors.getInt("x");
+                int y = doors.getInt("y");
+                int z = doors.getInt("z");
+                String type = doors.getString("type");
+                String state = doors.getString("doorstate");
+                p.sendMessage(color(config.getString("settings.prefix") + " &r&e" + loc.getBlock().getType().toString().toUpperCase() + " &fat &ex" + x + " y" + y + " z" + z + " &fin &e" + world.getName() + " &fis a &e" + type.toUpperCase() + " &fdoor, with a reset state of &e" + state.toUpperCase()));
             }
             statement.close();
             whichDoor.close();
-            return doorType;
         }
         catch (NullPointerException | SQLException npe) {
-            return null;
+            // ignore
         }
     }
 
