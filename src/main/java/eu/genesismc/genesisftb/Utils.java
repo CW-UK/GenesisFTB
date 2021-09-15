@@ -222,12 +222,12 @@ public class Utils {
         if (doorType.equalsIgnoreCase("MAIN")) {
             p.sendMessage(
                     color(GenesisFTB.getPlugin().config.getString("settings.prefix")) +
-                            ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is now a " + doorType.toUpperCase() + " door.");
+                            ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + (int)loc.getX() + " y" + (int)loc.getY() + " z" + (int)loc.getZ() + ChatColor.GREEN + " is now a " + doorType.toUpperCase() + " door.");
         }
         else {
             p.sendMessage(
                     color(GenesisFTB.getPlugin().config.getString("settings.prefix")) +
-                            ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is now a " + doorType.toUpperCase() + " door and will reset to a " + ChatColor.WHITE + doorState.toUpperCase() + ChatColor.GREEN + " position.");
+                            ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + (int)loc.getX() + " y" + (int)loc.getY() + " z" + (int)loc.getZ() + ChatColor.GREEN + " is now a " + doorType.toUpperCase() + " door and will reset to a " + ChatColor.WHITE + doorState.toUpperCase() + ChatColor.GREEN + " position.");
         }
         return true;
     }
@@ -263,7 +263,7 @@ public class Utils {
         String doorBlock = block.getType().toString();
         p.sendMessage(
                 color(GenesisFTB.getPlugin().config.getString("settings.prefix")) +
-                        ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + loc.getX() + " y" + loc.getY() + " z" + loc.getZ() + ChatColor.GREEN + " is no longer part of the game.");
+                        ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + (int)loc.getX() + " y" + (int)loc.getY() + " z" + (int)loc.getZ() + ChatColor.GREEN + " is no longer part of the game.");
         return true;
     }
 
