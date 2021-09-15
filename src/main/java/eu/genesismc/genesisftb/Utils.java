@@ -222,7 +222,7 @@ public class Utils {
         if (doorType.equalsIgnoreCase("MAIN")) {
             p.sendMessage(
                     color(GenesisFTB.getPlugin().config.getString("settings.prefix")) +
-                            ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + (int)loc.getX() + " y" + (int)loc.getY() + " z" + (int)loc.getZ() + ChatColor.GREEN + " is now a " + doorType.toUpperCase() + " door.");
+                            ChatColor.WHITE + " " + doorBlock + ChatColor.GREEN + " at " + ChatColor.WHITE + "x" + ChatColor.WHITE + (int)loc.getX() + " y" + (int)loc.getY() + " z" + (int)loc.getZ() + ChatColor.GREEN + " is now a " + ChatColor.WHITE + doorType.toUpperCase() + ChatColor.GREEN + " door.");
         }
         else {
             p.sendMessage(
