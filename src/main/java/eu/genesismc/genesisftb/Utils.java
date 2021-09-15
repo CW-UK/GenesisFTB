@@ -173,7 +173,7 @@ public class Utils {
                 int z = doors.getInt("z");
                 String type = doors.getString("type");
                 String state = doors.getString("doorstate");
-                p.sendMessage(color(config.getString("settings.prefix") + " &r&e" + loc.getBlock().getType().toString().toUpperCase() + " &fat &ex" + x + " y" + y + " z" + z + " &fin &e" + world.getName() + " &fis a &e" + type.toUpperCase() + " &fdoor, with a reset state of &e" + state.toUpperCase()));
+                p.sendMessage(color(config.getString("settings.prefix") + " &r&f" + loc.getBlock().getType().toString().toUpperCase() + " &eat &fx" + x + " y" + y + " z" + z + " &ein &f" + world.getName() + " &eis a &f" + type.toUpperCase() + " &edoor, with a reset state of &f" + state.toUpperCase()));
             }
             statement.close();
             whichDoor.close();
